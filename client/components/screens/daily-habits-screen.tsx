@@ -79,7 +79,7 @@ export function DailyHabitsScreen() {
             <h1 className="text-3xl font-bold text-gray-800 dark:text-white">Daily Habits</h1>
             <p className="text-gray-600 dark:text-gray-400">Month view of completions</p>
           </div>
-          <div className="flex items-center gap-3">
+          <div className="flex items-center gap-3 md:gap-3 gap-1">
             <button
               onClick={() => setCalendarMonth(dayjs(calendarMonth).subtract(1, 'month').toDate())}
               className="p-2 hover:bg-gray-100 dark:hover:bg-gray-700 rounded-lg transition-colors"
@@ -194,7 +194,7 @@ export function DailyHabitsScreen() {
                                 setGeneralModal({ date: dateStr, note: generalNotes[dateStr] || '' })
                               }
                             }}
-                            className="absolute bottom-1 right-1 h-5 w-5 md:h-7 md:w-7 rounded-full text-[10px] md:text-sm shadow-sm hover:shadow-md transition border flex items-center justify-center cursor-pointer bg-amber-300 text-white border-amber-300"
+                            className="absolute top-1 left-1 h-4 w-4 md:h-5 md:w-5 rounded-full text-[8px] md:text-[9px] shadow-sm hover:shadow-md transition border flex items-center justify-center cursor-pointer bg-amber-300 text-white border-amber-300"
                             title="View day journal"
                           >
                             ✉️
