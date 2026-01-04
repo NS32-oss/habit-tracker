@@ -296,7 +296,6 @@ export const toggleHabitLog = async (req, res, next) => {
     }
     await streakDoc.save();
 
-    console.log(`✅ TOGGLE RESPONSE: Sending log`, log);
     res.json(log);
   } catch (error) {
     next(error);
@@ -306,9 +305,6 @@ export const toggleHabitLog = async (req, res, next) => {
 export const updateHabitLog = async (req, res, next) => {
   try {
     const { date, completed, notes, mood } = req.body;
-    
-    console.log('[updateHabitLog] Request body:', { date, completed, notes, mood });
-    console.log('[updateHabitLog] Notes param exists:', notes !== undefined, 'Value:', notes);
 
     // Normalize to YYYY-MM-DD string to match schema and analytics joins
     const dateStr = dayjs(date || new Date()).format('YYYY-MM-DD');
@@ -327,18 +323,11 @@ export const updateHabitLog = async (req, res, next) => {
       });
     }
 
-    console.log('[updateHabitLog] Log before updates:', { completed: log.completed, notes: log.notes, mood: log.mood });
-
     if (completed !== undefined) log.completed = completed;
     if (notes !== undefined) log.notes = notes;
     if (mood !== undefined) log.mood = mood;
 
-    console.log('[updateHabitLog] Log after updates:', { completed: log.completed, notes: log.notes, mood: log.mood });
-
     await log.save();
-    
-    console.log('[updateHabitLog] Log after save:', { _id: log._id, completed: log.completed, notes: log.notes, mood: log.mood });
-    console.log('[updateHabitLog] Sending response:', JSON.stringify(log.toObject(), null, 2));
 
     res.json(log);
   } catch (error) {

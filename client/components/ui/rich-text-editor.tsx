@@ -141,15 +141,12 @@ export function RichTextEditor({ value, onChange, placeholder, className = '', m
     const el = editorRef.current
     if (!el) return
     const raw = el.innerHTML
-    console.log('[RichTextEditor] emitChange - raw innerHTML:', raw)
-    console.log('[RichTextEditor] emitChange - textContent:', el.textContent)
     
     // Don't sanitize during typing - just pass raw value
     // Sanitization happens on save
     const plain = (el.textContent || '').trim()
     const fallbackPlain = raw.replace(/<[^>]*>/g, '').trim()
     setHasContent((plain || fallbackPlain).length > 0)
-    console.log('[RichTextEditor] emitting value:', raw, 'hasContent:', (plain || fallbackPlain).length > 0)
     onChange(raw)
   }
 

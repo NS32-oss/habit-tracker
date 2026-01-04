@@ -45,11 +45,9 @@ export function HabitJournal({
       
       if (logs && logs.length > 0) {
         const log = logs[0]
-        console.log('[Habit Journal] Loaded log:', log)
         setNote(log.notes || '')
         setIsCompleted(log.completed || false)
       } else {
-        console.log('[Habit Journal] No existing log found')
         setNote('')
         setIsCompleted(false)
       }
@@ -66,24 +64,17 @@ export function HabitJournal({
       const dateStr = dayjs(selectedDate).format('YYYY-MM-DD')
       
       const rawNote = note || ''
-      console.log('[Habit Journal] Raw note:', rawNote)
       
       // Extract plain text using DOM
       const tempDiv = document.createElement('div')
       tempDiv.innerHTML = rawNote
       const plainText = (tempDiv.textContent || tempDiv.innerText || '').trim()
-      
-      console.log('[Habit Journal] Extracted plain text:', plainText, 'length:', plainText.length)
-      console.log('[Habit Journal] Saving with isCompleted:', isCompleted)
 
       // Save the original HTML content if there's text, otherwise undefined
       const noteToSave = plainText ? rawNote : undefined
-      console.log('[Habit Journal] Sending to API:', { habitId, dateStr, isCompleted, notes: noteToSave })
       
       const response = await habitAPI.logHabit(habitId, dateStr, isCompleted, noteToSave)
-      console.log('[Habit Journal] API Response:', JSON.stringify(response, null, 2))
       
-      console.log('[Habit Journal] Save successful')
       toast.success(plainText ? 'Journal entry saved!' : 'Habit updated!')
       onClose()
     } catch (error) {

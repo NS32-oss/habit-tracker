@@ -11,6 +11,7 @@ import { AddHabitFlow } from "@/components/add-habit-flow"
 import { AuthScreen } from "@/components/auth-screen"
 import { AnimatePresence, motion } from "framer-motion"
 import { habitAPI, isAuthenticated } from "@/lib/api"
+import { AppHeader } from "@/components/app-header"
 
 export default function HabitTracker() {
   const [activeTab, setActiveTab] = useState<TabType>(() => {
@@ -83,7 +84,8 @@ export default function HabitTracker() {
 
   return (
     <main className="min-h-screen bg-background relative selection:bg-primary/20">
-      <div className="max-w-7xl mx-auto min-h-screen pb-20 lg:pb-8 relative">
+      <AppHeader />
+      <div className="max-w-7xl mx-auto pb-20 lg:pb-8 relative">
         <AnimatePresence mode="wait">
           {activeTab === "home" && (
             <motion.div

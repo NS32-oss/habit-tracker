@@ -56,7 +56,7 @@ export function PWARegister() {
 
         navigator.serviceWorker.addEventListener('controllerchange', refreshOnControllerChange)
       } catch (err) {
-        console.error('Service worker registration failed:', err)
+        // SW registration failed silently
       }
     }
 

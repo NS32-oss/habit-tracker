@@ -39,24 +39,19 @@ export function DailyHabitsScreen() {
       const start = dayjs(calendarMonth).startOf('month').format('YYYY-MM-DD')
       const end = dayjs(calendarMonth).endOf('month').format('YYYY-MM-DD')
       const notes = await dayNotesAPI.getRange(start, end)
-      console.log('[loadDayNotes] Received notes:', notes)
       const map: Record<string, string> = {}
       notes.forEach((n) => {
         const noteContent = n.note || ''
-        console.log(`[loadDayNotes] Processing note for ${n.date}:`, noteContent)
         // Check if there's actual text content
         const tempDiv = document.createElement('div')
         tempDiv.innerHTML = noteContent
         const plain = (tempDiv.textContent || tempDiv.innerText || '').trim()
         if (plain.length > 0) {
           map[n.date] = noteContent
-          console.log(`[loadDayNotes] Added to map for ${n.date}`)
         }
       })
-      console.log('[loadDayNotes] Final map:', map)
       setGeneralNotes(map)
     } catch (error) {
-      console.error('[loadDayNotes] Error:', error)
       // fail silently
     }
   }
@@ -190,7 +185,6 @@ export function DailyHabitsScreen() {
                             onClick={(e) => {
                               e.stopPropagation()
                               const noteContent = generalNotes[dateStr] || ''
-                              console.log('[Daily Habits] Opening day note modal for', dateStr, 'with content:', noteContent)
                               setGeneralModal({ date: dateStr, note: noteContent })
                             }}
                             onKeyDown={(e) => {
@@ -321,14 +315,11 @@ export function DailyHabitsScreen() {
                   if (!generalModal) return
                   try {
                     const rawNote = generalModal.note || ''
-                    console.log('Raw note from editor:', rawNote)
                     
                     // Extract plain text using DOM
                     const tempDiv = document.createElement('div')
                     tempDiv.innerHTML = rawNote
                     const plain = (tempDiv.textContent || tempDiv.innerText || '').trim()
-                    
-                    console.log('Extracted plain text:', plain, 'length:', plain.length)
                     
                     // Save the original HTML (backend stores it as-is)
                     await dayNotesAPI.upsert(generalModal.date, plain ? rawNote : '')

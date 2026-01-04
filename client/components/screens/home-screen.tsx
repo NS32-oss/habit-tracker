@@ -77,12 +77,9 @@ export function HomeScreen() {
     try {
       const dateStr = dayjs(selectedDate).format('YYYY-MM-DD')
       const notes = await dayNotesAPI.getRange(dateStr, dateStr)
-      console.log('[loadDayNote] Received notes for', dateStr, ':', notes)
       const note = notes.find((n) => n.date === dateStr)?.note || ''
-      console.log('[loadDayNote] Setting dayNote to:', note)
       setDayNote(note)
     } catch (error) {
-      console.error('[loadDayNote] Error:', error)
       // silent
     }
   }
@@ -365,14 +362,11 @@ export function HomeScreen() {
                   onClick={async () => {
                     try {
                       const rawNote = dayNote || ''
-                      console.log('Raw note from editor:', rawNote)
                       
                       // Extract plain text using DOM
                       const tempDiv = document.createElement('div')
                       tempDiv.innerHTML = rawNote
                       const plain = (tempDiv.textContent || tempDiv.innerText || '').trim()
-                      
-                      console.log('Extracted plain text:', plain, 'length:', plain.length)
                       
                       // Save the original HTML (backend stores it as-is)
                       await dayNotesAPI.upsert(dayjs(selectedDate).format('YYYY-MM-DD'), plain ? rawNote : '')
