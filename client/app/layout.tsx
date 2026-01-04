@@ -2,7 +2,6 @@ import type { Metadata, Viewport } from 'next'
 import { Geist, Geist_Mono } from 'next/font/google'
 import { ThemeProvider } from '@/contexts/ThemeContext'
 import { PWARegister } from '@/components/pwa-register'
-import { BuildBadge } from '@/components/build-badge'
 import { Toaster } from 'sonner'
 import './globals.css'
 
@@ -33,7 +32,6 @@ export default function RootLayout({
         <ThemeProvider>
           <PWARegister />
           <Toaster position="top-center" richColors />
-          <BuildBadge />
           {children}
         </ThemeProvider>
       </body>

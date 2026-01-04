@@ -79,15 +79,15 @@ export function DailyHabitsScreen() {
             <h1 className="text-3xl font-bold text-gray-800 dark:text-white">Daily Habits</h1>
             <p className="text-gray-600 dark:text-gray-400">Month view of completions</p>
           </div>
-          <div className="flex items-center gap-1">
+          <div className="flex items-center gap-3">
             <button
               onClick={() => setCalendarMonth(dayjs(calendarMonth).subtract(1, 'month').toDate())}
               className="p-2 hover:bg-gray-100 dark:hover:bg-gray-700 rounded-lg transition-colors"
             >
               ←
             </button>
-            <span className="text-sm font-semibold text-gray-600 dark:text-gray-400 min-w-28 text-center px-1">
-              {dayjs(calendarMonth).format('MMM YYYY')}
+            <span className="text-sm font-semibold text-gray-600 dark:text-gray-400 min-w-32 text-center">
+              {dayjs(calendarMonth).format('MMMM YYYY')}
             </span>
             <button
               onClick={() => setCalendarMonth(dayjs(calendarMonth).add(1, 'month').toDate())}
@@ -171,19 +171,13 @@ export function DailyHabitsScreen() {
                           }
                         }}
                         className={`
-                          w-full h-16 rounded-lg border-2 transition-all relative
-                          flex flex-col items-center justify-center gap-0.5
+                          w-full h-20 rounded-lg border-2 transition-all relative
+                          flex flex-col items-center justify-center gap-1
                           ${bgColor} hover:scale-105 hover:shadow-lg cursor-pointer
                           ${isToday ? 'ring-2 ring-purple-500 ring-offset-1 dark:ring-offset-gray-800' : 'border-transparent'}
                         `}
                         title={isFuture ? 'Coming up...' : `${dayData?.completed ?? 0}/${dayData?.total ?? 0} completed`}
                       >
-                        <span className="text-base">{mood}</span>
-                        {!isFuture && dayData && (
-                          <span className="text-[9px] font-bold text-white/90 leading-none">
-                            {(dayData?.completed ?? 0)}/{(dayData?.total ?? 0)}
-                          </span>
-                        )}
                         {hasGeneralNote && (
                           <span
                             role="button"
@@ -200,15 +194,21 @@ export function DailyHabitsScreen() {
                                 setGeneralModal({ date: dateStr, note: generalNotes[dateStr] || '' })
                               }
                             }}
-                            className="absolute top-0.5 right-0.5 h-4 w-4 rounded-full text-[8px] shadow-sm hover:shadow-md transition border flex items-center justify-center cursor-pointer bg-amber-300 text-white border-amber-300"
+                            className="absolute bottom-1 right-1 h-5 w-5 md:h-7 md:w-7 rounded-full text-[10px] md:text-sm shadow-sm hover:shadow-md transition border flex items-center justify-center cursor-pointer bg-amber-300 text-white border-amber-300"
                             title="View day journal"
                           >
                             ✉️
                           </span>
                         )}
+                        <span className="text-lg">{mood}</span>
+                        {!isFuture && dayData && (
+                          <span className="text-[10px] font-bold text-white/90">
+                            {(dayData?.completed ?? 0)}/{(dayData?.total ?? 0)}
+                          </span>
+                        )}
                       </button>
-                      <span className="text-[9px] font-semibold text-gray-600 dark:text-gray-400 mt-1">
-                        {dayjs(dateStr).format('M/D')}
+                      <span className="text-[10px] font-semibold text-gray-600 dark:text-gray-400 mt-1">
+                        {dayjs(dateStr).format('MMM D')}
                       </span>
                     </div>
                   )

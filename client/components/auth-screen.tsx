@@ -3,7 +3,6 @@
 import { useState } from 'react'
 import { authAPI } from '@/lib/api'
 import { motion } from 'framer-motion'
-import { Logo } from './logo'
 
 interface AuthScreenProps {
   onSuccess: () => void
@@ -49,11 +48,11 @@ export function AuthScreen({ onSuccess }: AuthScreenProps) {
       >
         <div className="text-center mb-8">
           <motion.div
-            className="flex justify-center mb-4"
-            animate={{ scale: [1, 1.05, 1] }}
+            className="text-8xl mb-4"
+            animate={{ rotate: [0, 10, -10, 0] }}
             transition={{ duration: 2, repeat: Infinity, repeatDelay: 3 }}
           >
-            <Logo size="xl" />
+            🐱
           </motion.div>
           <h1 className="text-4xl font-bold text-gray-800 dark:text-white mb-2">
             Purrfect Habits
