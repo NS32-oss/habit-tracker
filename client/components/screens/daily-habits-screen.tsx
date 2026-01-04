@@ -79,15 +79,15 @@ export function DailyHabitsScreen() {
             <h1 className="text-3xl font-bold text-gray-800 dark:text-white">Daily Habits</h1>
             <p className="text-gray-600 dark:text-gray-400">Month view of completions</p>
           </div>
-          <div className="flex items-center gap-3">
+          <div className="flex items-center gap-1">
             <button
               onClick={() => setCalendarMonth(dayjs(calendarMonth).subtract(1, 'month').toDate())}
               className="p-2 hover:bg-gray-100 dark:hover:bg-gray-700 rounded-lg transition-colors"
             >
               ←
             </button>
-            <span className="text-sm font-semibold text-gray-600 dark:text-gray-400 min-w-32 text-center">
-              {dayjs(calendarMonth).format('MMMM YYYY')}
+            <span className="text-sm font-semibold text-gray-600 dark:text-gray-400 min-w-28 text-center px-1">
+              {dayjs(calendarMonth).format('MMM YYYY')}
             </span>
             <button
               onClick={() => setCalendarMonth(dayjs(calendarMonth).add(1, 'month').toDate())}
