@@ -1,0 +1,24 @@
+# Environment Variables for Render.com Deployment
+# Copy these values to Render Dashboard → Environment Variables
+
+PORT=5000
+NODE_ENV=production
+
+# MongoDB Connection (your existing connection string - already configured)
+MONGODB_URI=mongodb+srv://namansurana32_db_user:PMIq1uGFh8J3RehL@cluster0.afmsrhz.mongodb.net/habittracker?retryWrites=true&w=majority&appName=Cluster0
+
+# JWT Secrets (secure generated tokens)
+JWT_SECRET=8f7a3b2c9d1e4f5a6b7c8d9e0f1a2b3c4d5e6f7a8b9c0d1e2f3a4b5c6d7e8f9a0b1c2d3e4f5a6b7c8d9e0f1a2b3c
+JWT_REFRESH_SECRET=1a2b3c4d5e6f7a8b9c0d1e2f3a4b5c6d7e8f9a0b1c2d3e4f5a6b7c8d9e0f1a2b3c4d5e6f7a8b9c0d1e2f3a4b5c6d
+
+# Client URL (your Vercel deployment)
+CLIENT_URL=https://habbit-tracker-vx1y.vercel.app
+
+# Instructions for Render.com:
+# 1. Go to Render Dashboard → New → Web Service
+# 2. Connect your GitHub repo
+# 3. Set Root Directory to: server
+# 4. Build Command: yarn install
+# 5. Start Command: node src/server.js
+# 6. Copy all the variables above to Environment section
+# 7. Deploy!

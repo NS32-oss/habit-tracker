@@ -1,0 +1,17 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" role="img" aria-label="Purrfect Habits icon">
+  <defs>
+    <linearGradient id="g" x1="0%" x2="100%" y1="0%" y2="100%">
+      <stop offset="0%" stop-color="#a855f7"/>
+      <stop offset="100%" stop-color="#ec4899"/>
+    </linearGradient>
+  </defs>
+  <rect width="512" height="512" rx="112" fill="url(#g)"/>
+  <circle cx="180" cy="190" r="60" fill="#fef3c7"/>
+  <circle cx="332" cy="210" r="70" fill="#fde68a"/>
+  <path d="M176 308c8-46 60-70 104-42 18 12 30 33 32 56 1 14-9 26-23 26H199c-15 0-27-13-25-28z" fill="#0f172a" opacity="0.9"/>
+  <path d="M207 240c-12 0-22-10-22-22 0-9 6-17 14-20" stroke="#0f172a" stroke-width="12" stroke-linecap="round" fill="none"/>
+  <path d="M320 240c12 0 22-10 22-22 0-9-6-17-14-20" stroke="#0f172a" stroke-width="12" stroke-linecap="round" fill="none"/>
+  <circle cx="200" cy="220" r="10" fill="#0f172a"/>
+  <circle cx="312" cy="220" r="10" fill="#0f172a"/>
+  <path d="M246 252c8 8 22 8 30 0" stroke="#0f172a" stroke-width="10" stroke-linecap="round" fill="none"/>
+</svg>

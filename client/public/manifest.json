@@ -1,0 +1,27 @@
+{
+  "name": "Purrfect Habits",
+  "short_name": "Habits",
+  "description": "Track your daily habits with your cute cat companion",
+  "start_url": "/",
+  "display": "standalone",
+  "orientation": "portrait",
+  "background_color": "#0f172a",
+  "theme_color": "#7c3aed",
+  "permissions": [
+    "accelerometer",
+    "gyroscope"
+  ],
+  "icons": [
+    {
+      "src": "/icon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml"
+    },
+    {
+      "src": "/maskable-icon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "maskable"
+    }
+  ]
+}
