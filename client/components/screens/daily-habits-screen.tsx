@@ -171,13 +171,19 @@ export function DailyHabitsScreen() {
                           }
                         }}
                         className={`
-                          w-full h-20 rounded-lg border-2 transition-all relative
-                          flex flex-col items-center justify-center gap-1
+                          w-full h-16 rounded-lg border-2 transition-all relative
+                          flex flex-col items-center justify-center gap-0.5
                           ${bgColor} hover:scale-105 hover:shadow-lg cursor-pointer
                           ${isToday ? 'ring-2 ring-purple-500 ring-offset-1 dark:ring-offset-gray-800' : 'border-transparent'}
                         `}
                         title={isFuture ? 'Coming up...' : `${dayData?.completed ?? 0}/${dayData?.total ?? 0} completed`}
                       >
+                        <span className="text-base">{mood}</span>
+                        {!isFuture && dayData && (
+                          <span className="text-[9px] font-bold text-white/90 leading-none">
+                            {(dayData?.completed ?? 0)}/{(dayData?.total ?? 0)}
+                          </span>
+                        )}
                         {hasGeneralNote && (
                           <span
                             role="button"
@@ -194,21 +200,15 @@ export function DailyHabitsScreen() {
                                 setGeneralModal({ date: dateStr, note: generalNotes[dateStr] || '' })
                               }
                             }}
-                            className="absolute bottom-1 right-1 h-5 w-5 md:h-7 md:w-7 rounded-full text-[10px] md:text-sm shadow-sm hover:shadow-md transition border flex items-center justify-center cursor-pointer bg-amber-300 text-white border-amber-300"
+                            className="absolute top-0.5 right-0.5 h-4 w-4 rounded-full text-[8px] shadow-sm hover:shadow-md transition border flex items-center justify-center cursor-pointer bg-amber-300 text-white border-amber-300"
                             title="View day journal"
                           >
                             ✉️
                           </span>
                         )}
-                        <span className="text-lg">{mood}</span>
-                        {!isFuture && dayData && (
-                          <span className="text-[10px] font-bold text-white/90">
-                            {(dayData?.completed ?? 0)}/{(dayData?.total ?? 0)}
-                          </span>
-                        )}
                       </button>
-                      <span className="text-[10px] font-semibold text-gray-600 dark:text-gray-400 mt-1">
-                        {dayjs(dateStr).format('MMM D')}
+                      <span className="text-[9px] font-semibold text-gray-600 dark:text-gray-400 mt-1">
+                        {dayjs(dateStr).format('M/D')}
                       </span>
                     </div>
                   )
