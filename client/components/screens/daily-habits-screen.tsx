@@ -25,6 +25,16 @@ export function DailyHabitsScreen() {
     loadDayNotes()
   }, [calendarMonth])
 
+  useEffect(() => {
+    // Reload today's stats every minute to catch real-time updates
+    const interval = setInterval(() => {
+      if (dayjs(calendarMonth).isSame(dayjs(), 'month')) {
+        loadStats()
+      }
+    }, 60000)
+    return () => clearInterval(interval)
+  }, [calendarMonth])
+
   const loadStats = async () => {
     try {
       const data = await analyticsAPI.getDashboardStats()
@@ -172,7 +182,7 @@ export function DailyHabitsScreen() {
                         }}
                         className={`
                           w-full h-20 rounded-lg border-2 transition-all relative
-                          flex flex-col items-center justify-center gap-1
+                          flex flex-col items-center justify-between p-1
                           ${bgColor} hover:scale-105 hover:shadow-lg cursor-pointer
                           ${isToday ? 'ring-2 ring-purple-500 ring-offset-1 dark:ring-offset-gray-800' : 'border-transparent'}
                         `}
@@ -194,7 +204,7 @@ export function DailyHabitsScreen() {
                                 setGeneralModal({ date: dateStr, note: generalNotes[dateStr] || '' })
                               }
                             }}
-                            className="absolute top-1 left-1 h-4 w-4 md:h-5 md:w-5 rounded-full text-[8px] md:text-[9px] shadow-sm hover:shadow-md transition border flex items-center justify-center cursor-pointer bg-amber-300 text-white border-amber-300"
+                            className="h-4 w-4 md:h-5 md:w-5 rounded-full text-[8px] md:text-[9px] shadow-sm hover:shadow-md transition border flex items-center justify-center cursor-pointer bg-amber-300 text-white border-amber-300"
                             title="View day journal"
                           >
                             ✉️
