@@ -1,6 +1,6 @@
 'use client'
 
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useCallback, useMemo, useRef } from 'react'
 import { motion } from 'framer-motion'
 import { CatMascot } from '@/components/cat-mascot'
 import { HabitCard } from '@/components/habit-card'
@@ -42,21 +42,22 @@ export function HomeScreen() {
   const [dayNote, setDayNote] = useState('')
   const [showDayNoteModal, setShowDayNoteModal] = useState(false)
   const emojiPool = ['💧','💻','🎸','💪','📚','🧘','🧠','🧹','🛌','🥗','🚴','🎮','📝','🧴','🏊','🍎']
+  const abortControllerRef = useRef<AbortController | null>(null)
 
-  useEffect(() => {
-    loadData()
-    loadDayNote()
-    if (typeof window !== 'undefined') {
-      localStorage.setItem('selectedDate', dayjs(selectedDate).format('YYYY-MM-DD'))
+  const dateStr = useMemo(() => dayjs(selectedDate).format('YYYY-MM-DD'), [selectedDate])
+
+  const loadData = useCallback(async () => {
+    // Cancel previous request
+    if (abortControllerRef.current) {
+      abortControllerRef.current.abort()
     }
-  }, [selectedDate])
+    abortControllerRef.current = new AbortController()
 
-  const loadData = async () => {
     try {
-      const dateStr = dayjs(selectedDate).format('YYYY-MM-DD')
-      const [habitsData, statsData] = await Promise.all([
+      const [habitsData, statsData, notesData] = await Promise.all([
         habitAPI.getAll(true, dateStr),
         analyticsAPI.getDashboardStats(),
+        dayNotesAPI.getRange(dateStr, dateStr)
       ])
 
       const total = habitsData.length
@@ -66,30 +67,56 @@ export function HomeScreen() {
       setCatMood({ completionRate: rate, totalHabits: total, completedHabits: completed })
       setHabits(habitsData)
       setStats(statsData)
-    } catch (error) {
-      // Silent error handling
+      
+      const note = notesData.find((n) => n.date === dateStr)?.note || ''
+      setDayNote(note)
+    } catch (error: any) {
+      if (error.name !== 'AbortError') {
+        // Silent error handling
+      }
     } finally {
       setLoading(false)
     }
-  }
+  }, [dateStr])
 
-  const loadDayNote = async () => {
-    try {
-      const dateStr = dayjs(selectedDate).format('YYYY-MM-DD')
-      const notes = await dayNotesAPI.getRange(dateStr, dateStr)
-      const note = notes.find((n) => n.date === dateStr)?.note || ''
-      setDayNote(note)
-    } catch (error) {
-      // silent
+  useEffect(() => {
+    loadData()
+    if (typeof window !== 'undefined') {
+      localStorage.setItem('selectedDate', dateStr)
     }
-  }
+    return () => {
+      if (abortControllerRef.current) {
+        abortControllerRef.current.abort()
+      }
+    }
+  }, [loadData, dateStr])
 
   const handleToggle = async (habitId: string) => {
+    // Optimistic UI update
+    setHabits(prev => prev.map(h => 
+      h._id === habitId ? { ...h, isCompletedForDate: !h.isCompletedForDate } : h
+    ))
+
+    // Update cat mood optimistically
+    const updatedHabits = habits.map(h => 
+      h._id === habitId ? { ...h, isCompletedForDate: !h.isCompletedForDate } : h
+    )
+    const total = updatedHabits.length
+    const completed = updatedHabits.filter(h => h.isCompletedForDate).length
+    const rate = total > 0 ? Math.round((completed / total) * 100) : 0
+    setCatMood({ completionRate: rate, totalHabits: total, completedHabits: completed })
+
     try {
-      const dateStr = dayjs(selectedDate).format('YYYY-MM-DD')
       await habitAPI.toggleLog(habitId, dateStr)
+      // Reload to ensure consistency
       loadData()
     } catch (error) {
+      // Revert on error
+      setHabits(habits)
+      const revertTotal = habits.length
+      const revertCompleted = habits.filter(h => h.isCompletedForDate).length
+      const revertRate = revertTotal > 0 ? Math.round((revertCompleted / revertTotal) * 100) : 0
+      setCatMood({ completionRate: revertRate, totalHabits: revertTotal, completedHabits: revertCompleted })
       toast.error('Failed to update habit. Please try again.')
     }
   }
@@ -372,7 +399,7 @@ export function HomeScreen() {
                       await dayNotesAPI.upsert(dayjs(selectedDate).format('YYYY-MM-DD'), plain ? rawNote : '')
                       setDayNote(plain ? rawNote : '')
                       setShowDayNoteModal(false)
-                      await loadDayNote()
+                      await loadData()
                       
                       if (plain) {
                         toast.success('Day journal saved!')

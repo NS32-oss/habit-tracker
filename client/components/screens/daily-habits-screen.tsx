@@ -1,6 +1,6 @@
 "use client"
 
-import { JSX, useEffect, useState } from 'react'
+import { JSX, useEffect, useState, useMemo, useCallback, useRef } from 'react'
 import { motion } from 'framer-motion'
 import dayjs from 'dayjs'
 import utc from 'dayjs/plugin/utc'
@@ -18,58 +18,35 @@ export function DailyHabitsScreen() {
   const [noteModal, setNoteModal] = useState<{ date: string; notes: { habitId: string; habitName: string; habitEmoji: string; note: string }[] } | null>(null)
   const [generalNotes, setGeneralNotes] = useState<Record<string, string>>({})
   const [generalModal, setGeneralModal] = useState<{ date: string; note: string } | null>(null)
+  const abortControllerRef = useRef<AbortController | null>(null)
 
-  useEffect(() => {
+  // Memoize month range calculations
+  const monthRange = useMemo(() => ({
+    start: dayjs(calendarMonth).startOf('month').format('YYYY-MM-DD'),
+    end: dayjs(calendarMonth).endOf('month').format('YYYY-MM-DD'),
+    key: dayjs(calendarMonth).format('YYYY-MM')
+  }), [calendarMonth])
+
+  // Optimized data loading with parallel API calls
+  const loadData = useCallback(async () => {
+    // Cancel previous request if still pending
+    if (abortControllerRef.current) {
+      abortControllerRef.current.abort()
+    }
+    abortControllerRef.current = new AbortController()
+
     setLoading(true)
-    loadStats()
-    loadDayNotes()
-  }, [calendarMonth])
-
-  useEffect(() => {
-    // Reload today's stats every minute to catch real-time updates
-    const interval = setInterval(() => {
-      if (dayjs(calendarMonth).isSame(dayjs(), 'month')) {
-        loadStats()
-      }
-    }, 60000)
-
-    // Also reload when window regains focus (user returns to tab)
-    const handleFocus = () => {
-      if (dayjs(calendarMonth).isSame(dayjs(), 'month')) {
-        loadStats()
-      }
-    }
-    window.addEventListener('focus', handleFocus)
-    window.addEventListener('visibilitychange', () => {
-      if (!document.hidden && dayjs(calendarMonth).isSame(dayjs(), 'month')) {
-        loadStats()
-      }
-    })
-
-    return () => {
-      clearInterval(interval)
-      window.removeEventListener('focus', handleFocus)
-    }
-  }, [calendarMonth])
-
-  const loadStats = async () => {
     try {
-      const data = await analyticsAPI.getDashboardStats()
-      setStats(data)
-    } finally {
-      setLoading(false)
-    }
-  }
+      // Parallel API calls for faster loading
+      const [statsData, notesData] = await Promise.all([
+        analyticsAPI.getDashboardStats(),
+        dayNotesAPI.getRange(monthRange.start, monthRange.end)
+      ])
 
-  const loadDayNotes = async () => {
-    try {
-      const start = dayjs(calendarMonth).startOf('month').format('YYYY-MM-DD')
-      const end = dayjs(calendarMonth).endOf('month').format('YYYY-MM-DD')
-      const notes = await dayNotesAPI.getRange(start, end)
+      // Process notes efficiently
       const map: Record<string, string> = {}
-      notes.forEach((n) => {
+      notesData.forEach((n) => {
         const noteContent = n.note || ''
-        // Check if there's actual text content
         const tempDiv = document.createElement('div')
         tempDiv.innerHTML = noteContent
         const plain = (tempDiv.textContent || tempDiv.innerText || '').trim()
@@ -77,11 +54,42 @@ export function DailyHabitsScreen() {
           map[n.date] = noteContent
         }
       })
+
+      setStats(statsData)
       setGeneralNotes(map)
-    } catch (error) {
-      // fail silently
+    } catch (error: any) {
+      if (error.name !== 'AbortError') {
+        // fail silently for non-abort errors
+      }
+    } finally {
+      setLoading(false)
     }
-  }
+  }, [monthRange])
+
+  useEffect(() => {
+    loadData()
+    return () => {
+      if (abortControllerRef.current) {
+        abortControllerRef.current.abort()
+      }
+    }
+  }, [loadData])
+
+  // Reload only when user returns (debounced)
+  useEffect(() => {
+    let timeoutId: NodeJS.Timeout
+    const handleVisibility = () => {
+      if (!document.hidden && dayjs(calendarMonth).isSame(dayjs(), 'month')) {
+        clearTimeout(timeoutId)
+        timeoutId = setTimeout(() => loadData(), 300)
+      }
+    }
+    window.addEventListener('visibilitychange', handleVisibility)
+    return () => {
+      window.removeEventListener('visibilitychange', handleVisibility)
+      clearTimeout(timeoutId)
+    }
+  }, [calendarMonth, loadData])
 
   if (loading) {
     return (
@@ -106,7 +114,7 @@ export function DailyHabitsScreen() {
             <h1 className="text-3xl font-bold text-gray-800 dark:text-white">Daily Habits</h1>
             <p className="text-gray-600 dark:text-gray-400">Month view of completions</p>
           </div>
-          <div className="flex items-center gap-3 md:gap-3 gap-1">
+          <div className="flex items-center gap-1 md:gap-3">
             <button
               onClick={() => setCalendarMonth(dayjs(calendarMonth).subtract(1, 'month').toDate())}
               className="p-2 hover:bg-gray-100 dark:hover:bg-gray-700 rounded-lg transition-colors"
@@ -154,7 +162,7 @@ export function DailyHabitsScreen() {
             </div>
 
             <div className="grid grid-cols-7 gap-2">
-              {(() => {
+              {useMemo(() => {
                 const firstDay = dayjs(calendarMonth).startOf('month')
                 const lastDay = dayjs(calendarMonth).endOf('month')
                 const daysInMonth = lastDay.date()
@@ -188,15 +196,17 @@ export function DailyHabitsScreen() {
                           ? 'bg-yellow-400 dark:bg-yellow-500/80'
                           : 'bg-emerald-400 dark:bg-emerald-500/80'
 
+                  const handleDateClick = () => {
+                    if (typeof window !== 'undefined') {
+                      localStorage.setItem('selectedDate', dateStr)
+                      window.location.href = '/'
+                    }
+                  }
+
                   cells.push(
                     <div key={day} className="flex flex-col items-center">
                       <button
-                        onClick={() => {
-                          if (typeof window !== 'undefined') {
-                            localStorage.setItem('selectedDate', dateStr)
-                            window.location.href = '/'
-                          }
-                        }}
+                        onClick={handleDateClick}
                         className={`
                           w-full h-20 rounded-lg border-2 transition-all
                           grid grid-rows-[auto_1fr_auto] items-center justify-items-center p-1 gap-0.5
@@ -246,7 +256,7 @@ export function DailyHabitsScreen() {
                 }
 
                 return cells
-              })()}
+              }, [calendarMonth, stats?.weeklyData, generalNotes])}
             </div>
           </div>
         )}
@@ -366,7 +376,7 @@ export function DailyHabitsScreen() {
                     })
                     
                     setGeneralModal(null)
-                    await loadDayNotes()
+                    await loadData()
                     
                     if (plain) {
                       toast.success('Day journal saved!')
