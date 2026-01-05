@@ -27,6 +27,104 @@ export function DailyHabitsScreen() {
     key: dayjs(calendarMonth).format('YYYY-MM')
   }), [calendarMonth])
 
+  const calendarCells = useMemo(() => {
+    if (!stats?.weeklyData || stats.weeklyData.length === 0) return []
+
+    const firstDay = dayjs(calendarMonth).startOf('month')
+    const lastDay = dayjs(calendarMonth).endOf('month')
+    const daysInMonth = lastDay.date()
+    const startingDayOfWeek = firstDay.day()
+
+    const dataMap = new Map(stats.weeklyData.map((d: any) => [d.date, d]))
+    const cells: JSX.Element[] = []
+
+    for (let i = 0; i < startingDayOfWeek; i++) {
+      cells.push(<div key={`empty-${i}`} className="flex flex-col items-center" />)
+    }
+
+    for (let day = 1; day <= daysInMonth; day++) {
+      const dateStr = dayjs(calendarMonth).date(day).format('YYYY-MM-DD')
+      const dayData = dataMap.get(dateStr) as any
+      const hasNotes = (dayData?.notes || []).length > 0
+      const hasGeneralNote = (generalNotes[dateStr] || '').trim().length > 0
+      const rate = (dayData?.total ?? 0) > 0 ? ((dayData?.completed ?? 0) / (dayData?.total ?? 0)) * 100 : 0
+      const isFuture = dayjs(dateStr).isAfter(dayjs(), 'day')
+      const isToday = dayjs(dateStr).isSame(dayjs(), 'day')
+
+      const mood = isFuture ? '🤔' : rate < 50 ? '😾' : rate < 80 ? '😺' : '😻'
+
+      const bgColor = isFuture
+        ? 'bg-gray-100 dark:bg-gray-700'
+        : rate === 0
+          ? 'bg-gray-300 dark:bg-gray-600'
+          : rate < 50
+            ? 'bg-red-400 dark:bg-red-500/80'
+            : rate < 80
+              ? 'bg-yellow-400 dark:bg-yellow-500/80'
+              : 'bg-emerald-400 dark:bg-emerald-500/80'
+
+      const handleDateClick = () => {
+        if (typeof window !== 'undefined') {
+          localStorage.setItem('selectedDate', dateStr)
+          window.location.href = '/'
+        }
+      }
+
+      cells.push(
+        <div key={day} className="flex flex-col items-center">
+          <button
+            onClick={handleDateClick}
+            className={`
+              w-full h-20 rounded-lg border-2 transition-all
+              grid grid-rows-[auto_1fr_auto] items-center justify-items-center p-1 gap-0.5
+              ${bgColor} hover:scale-105 hover:shadow-lg cursor-pointer
+              ${isToday ? 'ring-2 ring-purple-500 ring-offset-1 dark:ring-offset-gray-800' : 'border-transparent'}
+            `}
+            title={isFuture ? 'Coming up...' : `${dayData?.completed ?? 0}/${dayData?.total ?? 0} completed`}
+          >
+            <div className="h-5 w-full flex items-start justify-start">
+              {hasGeneralNote && (
+                <span
+                  role="button"
+                  tabIndex={0}
+                  onClick={(e) => {
+                    e.stopPropagation()
+                    const noteContent = generalNotes[dateStr] || ''
+                    setGeneralModal({ date: dateStr, note: noteContent })
+                  }}
+                  onKeyDown={(e) => {
+                    if (e.key === 'Enter' || e.key === ' ') {
+                      e.preventDefault()
+                      e.stopPropagation()
+                      setGeneralModal({ date: dateStr, note: generalNotes[dateStr] || '' })
+                    }
+                  }}
+                  className="h-4 w-4 md:h-5 md:w-5 rounded-full text-[8px] md:text-[9px] shadow-sm hover:shadow-md transition border flex items-center justify-center cursor-pointer bg-amber-300 text-white border-amber-300"
+                  title="View day journal"
+                >
+                  ✉️
+                </span>
+              )}
+            </div>
+            <span className="text-lg">{mood}</span>
+            <div className="h-4 flex items-center">
+              {!isFuture && dayData && (
+                <span className="text-[10px] font-bold text-white/90">
+                  {(dayData?.completed ?? 0)}/{(dayData?.total ?? 0)}
+                </span>
+              )}
+            </div>
+          </button>
+          <span className="text-[10px] font-semibold text-gray-600 dark:text-gray-400 mt-1">
+            {dayjs(dateStr).format('MMM D')}
+          </span>
+        </div>
+      )
+    }
+
+    return cells
+  }, [calendarMonth, stats?.weeklyData, generalNotes])
+
   // Optimized data loading with parallel API calls
   const loadData = useCallback(async () => {
     // Cancel previous request if still pending
@@ -162,101 +260,7 @@ export function DailyHabitsScreen() {
             </div>
 
             <div className="grid grid-cols-7 gap-2">
-              {useMemo(() => {
-                const firstDay = dayjs(calendarMonth).startOf('month')
-                const lastDay = dayjs(calendarMonth).endOf('month')
-                const daysInMonth = lastDay.date()
-                const startingDayOfWeek = firstDay.day()
-
-                const dataMap = new Map(stats.weeklyData.map((d: any) => [d.date, d]))
-                const cells: JSX.Element[] = []
-
-                for (let i = 0; i < startingDayOfWeek; i++) {
-                  cells.push(<div key={`empty-${i}`} className="flex flex-col items-center" />)
-                }
-
-                for (let day = 1; day <= daysInMonth; day++) {
-                  const dateStr = dayjs(calendarMonth).date(day).format('YYYY-MM-DD')
-                  const dayData = dataMap.get(dateStr) as any
-                  const hasNotes = (dayData?.notes || []).length > 0
-                  const hasGeneralNote = (generalNotes[dateStr] || '').trim().length > 0
-                  const rate = (dayData?.total ?? 0) > 0 ? ((dayData?.completed ?? 0) / (dayData?.total ?? 0)) * 100 : 0
-                  const isFuture = dayjs(dateStr).isAfter(dayjs(), 'day')
-                  const isToday = dayjs(dateStr).isSame(dayjs(), 'day')
-
-                  const mood = isFuture ? '🤔' : rate < 50 ? '😾' : rate < 80 ? '😺' : '😻'
-
-                  const bgColor = isFuture
-                    ? 'bg-gray-100 dark:bg-gray-700'
-                    : rate === 0
-                      ? 'bg-gray-300 dark:bg-gray-600'
-                      : rate < 50
-                        ? 'bg-red-400 dark:bg-red-500/80'
-                        : rate < 80
-                          ? 'bg-yellow-400 dark:bg-yellow-500/80'
-                          : 'bg-emerald-400 dark:bg-emerald-500/80'
-
-                  const handleDateClick = () => {
-                    if (typeof window !== 'undefined') {
-                      localStorage.setItem('selectedDate', dateStr)
-                      window.location.href = '/'
-                    }
-                  }
-
-                  cells.push(
-                    <div key={day} className="flex flex-col items-center">
-                      <button
-                        onClick={handleDateClick}
-                        className={`
-                          w-full h-20 rounded-lg border-2 transition-all
-                          grid grid-rows-[auto_1fr_auto] items-center justify-items-center p-1 gap-0.5
-                          ${bgColor} hover:scale-105 hover:shadow-lg cursor-pointer
-                          ${isToday ? 'ring-2 ring-purple-500 ring-offset-1 dark:ring-offset-gray-800' : 'border-transparent'}
-                        `}
-                        title={isFuture ? 'Coming up...' : `${dayData?.completed ?? 0}/${dayData?.total ?? 0} completed`}
-                      >
-                        <div className="h-5 w-full flex items-start justify-start">
-                          {hasGeneralNote && (
-                            <span
-                              role="button"
-                              tabIndex={0}
-                              onClick={(e) => {
-                                e.stopPropagation()
-                                const noteContent = generalNotes[dateStr] || ''
-                                setGeneralModal({ date: dateStr, note: noteContent })
-                              }}
-                              onKeyDown={(e) => {
-                                if (e.key === 'Enter' || e.key === ' ') {
-                                  e.preventDefault()
-                                  e.stopPropagation()
-                                  setGeneralModal({ date: dateStr, note: generalNotes[dateStr] || '' })
-                                }
-                              }}
-                              className="h-4 w-4 md:h-5 md:w-5 rounded-full text-[8px] md:text-[9px] shadow-sm hover:shadow-md transition border flex items-center justify-center cursor-pointer bg-amber-300 text-white border-amber-300"
-                              title="View day journal"
-                            >
-                              ✉️
-                            </span>
-                          )}
-                        </div>
-                        <span className="text-lg">{mood}</span>
-                        <div className="h-4 flex items-center">
-                          {!isFuture && dayData && (
-                            <span className="text-[10px] font-bold text-white/90">
-                              {(dayData?.completed ?? 0)}/{(dayData?.total ?? 0)}
-                            </span>
-                          )}
-                        </div>
-                      </button>
-                      <span className="text-[10px] font-semibold text-gray-600 dark:text-gray-400 mt-1">
-                        {dayjs(dateStr).format('MMM D')}
-                      </span>
-                    </div>
-                  )
-                }
-
-                return cells
-              }, [calendarMonth, stats?.weeklyData, generalNotes])}
+              {calendarCells}
             </div>
           </div>
         )}
