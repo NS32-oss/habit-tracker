@@ -75,14 +75,15 @@ export function DailyHabitsScreen() {
           <button
             onClick={handleDateClick}
             className={`
-              w-full h-20 rounded-lg border-2 transition-all
+              w-full h-20 rounded-lg border-2 transition-all relative
               grid grid-rows-[auto_1fr_auto] items-center justify-items-center p-1 gap-0.5
+              md:flex md:flex-col md:items-center md:justify-center md:gap-2
               ${bgColor} hover:scale-105 hover:shadow-lg cursor-pointer
               ${isToday ? 'ring-2 ring-purple-500 ring-offset-1 dark:ring-offset-gray-800' : 'border-transparent'}
             `}
             title={isFuture ? 'Coming up...' : `${dayData?.completed ?? 0}/${dayData?.total ?? 0} completed`}
           >
-            <div className="h-5 w-full flex items-start justify-start">
+            <div className="h-5 w-full flex items-start justify-start md:absolute md:top-1 md:left-1 md:w-auto md:h-auto">
               {hasGeneralNote && (
                 <span
                   role="button"
