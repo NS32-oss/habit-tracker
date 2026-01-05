@@ -106,10 +106,10 @@ export function DailyHabitsScreen() {
                 </span>
               )}
             </div>
-            <span className="text-lg">{mood}</span>
+            <span className="text-lg md:text-2xl">{mood}</span>
             <div className="h-4 flex items-center">
               {!isFuture && dayData && (
-                <span className="text-[10px] font-bold text-white/90">
+                <span className="text-[10px] md:text-xs font-bold text-white/90">
                   {(dayData?.completed ?? 0)}/{(dayData?.total ?? 0)}
                 </span>
               )}
