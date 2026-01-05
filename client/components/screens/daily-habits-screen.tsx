@@ -32,7 +32,24 @@ export function DailyHabitsScreen() {
         loadStats()
       }
     }, 60000)
-    return () => clearInterval(interval)
+
+    // Also reload when window regains focus (user returns to tab)
+    const handleFocus = () => {
+      if (dayjs(calendarMonth).isSame(dayjs(), 'month')) {
+        loadStats()
+      }
+    }
+    window.addEventListener('focus', handleFocus)
+    window.addEventListener('visibilitychange', () => {
+      if (!document.hidden && dayjs(calendarMonth).isSame(dayjs(), 'month')) {
+        loadStats()
+      }
+    })
+
+    return () => {
+      clearInterval(interval)
+      window.removeEventListener('focus', handleFocus)
+    }
   }, [calendarMonth])
 
   const loadStats = async () => {
@@ -181,41 +198,45 @@ export function DailyHabitsScreen() {
                           }
                         }}
                         className={`
-                          w-full h-20 rounded-lg border-2 transition-all relative
-                          flex flex-col items-center justify-between p-1
+                          w-full h-20 rounded-lg border-2 transition-all
+                          grid grid-rows-[auto_1fr_auto] items-center justify-items-center p-1 gap-0.5
                           ${bgColor} hover:scale-105 hover:shadow-lg cursor-pointer
                           ${isToday ? 'ring-2 ring-purple-500 ring-offset-1 dark:ring-offset-gray-800' : 'border-transparent'}
                         `}
                         title={isFuture ? 'Coming up...' : `${dayData?.completed ?? 0}/${dayData?.total ?? 0} completed`}
                       >
-                        {hasGeneralNote && (
-                          <span
-                            role="button"
-                            tabIndex={0}
-                            onClick={(e) => {
-                              e.stopPropagation()
-                              const noteContent = generalNotes[dateStr] || ''
-                              setGeneralModal({ date: dateStr, note: noteContent })
-                            }}
-                            onKeyDown={(e) => {
-                              if (e.key === 'Enter' || e.key === ' ') {
-                                e.preventDefault()
+                        <div className="h-5 w-full flex items-start justify-start">
+                          {hasGeneralNote && (
+                            <span
+                              role="button"
+                              tabIndex={0}
+                              onClick={(e) => {
                                 e.stopPropagation()
-                                setGeneralModal({ date: dateStr, note: generalNotes[dateStr] || '' })
-                              }
-                            }}
-                            className="h-4 w-4 md:h-5 md:w-5 rounded-full text-[8px] md:text-[9px] shadow-sm hover:shadow-md transition border flex items-center justify-center cursor-pointer bg-amber-300 text-white border-amber-300"
-                            title="View day journal"
-                          >
-                            ✉️
-                          </span>
-                        )}
+                                const noteContent = generalNotes[dateStr] || ''
+                                setGeneralModal({ date: dateStr, note: noteContent })
+                              }}
+                              onKeyDown={(e) => {
+                                if (e.key === 'Enter' || e.key === ' ') {
+                                  e.preventDefault()
+                                  e.stopPropagation()
+                                  setGeneralModal({ date: dateStr, note: generalNotes[dateStr] || '' })
+                                }
+                              }}
+                              className="h-4 w-4 md:h-5 md:w-5 rounded-full text-[8px] md:text-[9px] shadow-sm hover:shadow-md transition border flex items-center justify-center cursor-pointer bg-amber-300 text-white border-amber-300"
+                              title="View day journal"
+                            >
+                              ✉️
+                            </span>
+                          )}
+                        </div>
                         <span className="text-lg">{mood}</span>
-                        {!isFuture && dayData && (
-                          <span className="text-[10px] font-bold text-white/90">
-                            {(dayData?.completed ?? 0)}/{(dayData?.total ?? 0)}
-                          </span>
-                        )}
+                        <div className="h-4 flex items-center">
+                          {!isFuture && dayData && (
+                            <span className="text-[10px] font-bold text-white/90">
+                              {(dayData?.completed ?? 0)}/{(dayData?.total ?? 0)}
+                            </span>
+                          )}
+                        </div>
                       </button>
                       <span className="text-[10px] font-semibold text-gray-600 dark:text-gray-400 mt-1">
                         {dayjs(dateStr).format('MMM D')}
