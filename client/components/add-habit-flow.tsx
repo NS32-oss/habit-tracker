@@ -16,7 +16,7 @@ const colorOptions = [
   '#fbbf24', // amber
   '#60a5fa', // blue
   '#f472b6', // pink
-  '#34d399', // green
+  '#34d399', // greenn
   '#fb923c', // orange
 ]
 
