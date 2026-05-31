@@ -386,7 +386,7 @@ function OverviewSection({
             {featuredTasks.length === 0 ? (
               <EmptyState filter={activeFilter} />
             ) : (
-              featuredTasks.map((task) => <TaskCard key={task._id} task={task} onToggle={() => {}} onEdit={() => {}} onDelete={() => {}} onPin={() => {}} onFavorite={() => {}} />)
+              featuredTasks.map((task) => <TaskCard key={task._id} task={task} onToggle={() => {}} onEdit={() => {}} onDelete={() => {}} onArchive={() => {}} onPin={() => {}} onFavorite={() => {}} />)
             )}
           </div>
         </div>
@@ -399,7 +399,7 @@ function OverviewSection({
             {featuredTasks.length === 0 ? (
               <p className="text-sm text-gray-500 dark:text-gray-400">No active tasks to highlight.</p>
             ) : (
-              featuredTasks.map((task) => <TaskCard key={task._id} task={task} onToggle={() => {}} onEdit={() => {}} onDelete={() => {}} onPin={() => {}} onFavorite={() => {}} />)
+              featuredTasks.map((task) => <TaskCard key={task._id} task={task} onToggle={() => {}} onEdit={() => {}} onDelete={() => {}} onArchive={() => {}} onPin={() => {}} onFavorite={() => {}} />)
             )}
           </div>
         </div>

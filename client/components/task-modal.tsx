@@ -15,7 +15,7 @@ interface Task {
   color: string
   dueDate: string | null
   dueTime: string | null
-  startDate: string | null
+  startDate?: string | null
   recurring?: {
     enabled: boolean
     pattern: 'daily' | 'weekly' | 'monthly' | 'custom'
@@ -359,7 +359,7 @@ export function TaskModal({ task, onSave, onClose, categories }: TaskModalProps)
                       onChange={(e) =>
                         setFormData({
                           ...formData,
-                          recurring: { ...formData.recurring, enabled: e.target.checked },
+                          recurring: { enabled: e.target.checked, pattern: formData.recurring?.pattern ?? 'daily' },
                         })
                       }
                       className="rounded"
@@ -374,7 +374,7 @@ export function TaskModal({ task, onSave, onClose, categories }: TaskModalProps)
                         setFormData({
                           ...formData,
                           recurring: {
-                            ...formData.recurring,
+                            ...(formData.recurring || { enabled: false, pattern: 'daily' }),
                             pattern: e.target.value as 'daily' | 'weekly' | 'monthly' | 'custom',
                           },
                         })
