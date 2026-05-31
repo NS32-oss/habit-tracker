@@ -99,7 +99,11 @@ export function ExpenseTrackerScreen() {
   }, [budgets, transactions])
 
   const paymentOptions = useMemo(() => {
-    return Array.from(new Set([...DEFAULT_PAYMENT_METHODS, ...transactions.map((item) => item.paymentMethod).filter(Boolean)])).sort()
+    const fromTransactions = transactions
+      .map((item) => item.paymentMethod)
+      .filter((m): m is string => Boolean(m))
+
+    return Array.from(new Set<string>([...DEFAULT_PAYMENT_METHODS, ...fromTransactions])).sort()
   }, [transactions])
 
   const trendData = useMemo(() => {
