@@ -13,20 +13,28 @@ import { AnimatePresence, motion } from "framer-motion"
 import { habitAPI, isAuthenticated } from "@/lib/api"
 
 export default function HabitTracker() {
-  const [activeTab, setActiveTab] = useState<TabType>(() => {
-    if (typeof window === 'undefined') return 'home'
-    const saved = localStorage.getItem('activeTab')
-    return (saved as TabType) || 'home'
-  })
+  const [activeTab, setActiveTab] = useState<TabType>('home')
   const [isAddOpen, setIsAddOpen] = useState(false)
   const [refreshKey, setRefreshKey] = useState(0)
   const [isAuth, setIsAuth] = useState(false)
   const [checkingAuth, setCheckingAuth] = useState(true)
+  const [hasMounted, setHasMounted] = useState(false)
+
+  useEffect(() => {
+    setHasMounted(true)
+  }, [])
 
   useEffect(() => {
     // Save active tab to localStorage whenever it changes
     localStorage.setItem('activeTab', activeTab)
   }, [activeTab])
+
+  useEffect(() => {
+    const savedTab = localStorage.getItem('activeTab')
+    if (savedTab && ['home', 'journey', 'daily', 'analytics', 'profile', 'habits'].includes(savedTab)) {
+      setActiveTab(savedTab as TabType)
+    }
+  }, [])
 
   useEffect(() => {
     // Check authentication on mount (client-side only)
@@ -64,6 +72,10 @@ export default function HabitTracker() {
     localStorage.removeItem('refreshToken')
     localStorage.removeItem('user')
     setIsAuth(false)
+  }
+
+  if (!hasMounted) {
+    return null
   }
 
   if (checkingAuth) {
