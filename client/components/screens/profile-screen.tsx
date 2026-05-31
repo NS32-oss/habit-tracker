@@ -1,146 +1,153 @@
-'use client'
+"use client";
 
-import { useState, useEffect } from 'react'
-import { motion } from 'framer-motion'
-import Image from 'next/image'
-import { useTheme } from '@/contexts/ThemeContext'
-import { authAPI } from '@/lib/api'
-import { toast } from 'sonner'
+import { useState, useEffect } from "react";
+import { motion } from "framer-motion";
+import Image from "next/image";
+import { useTheme } from "@/contexts/ThemeContext";
+import { authAPI } from "@/lib/api";
+import { toast } from "sonner";
 
 // ✅ FIX #15: Email masking helper
 const maskEmail = (email: string): string => {
-  if (!email || !email.includes('@')) {
-    return email
+  if (!email || !email.includes("@")) {
+    return email;
   }
-  const [localPart, domain] = email.split('@')
+  const [localPart, domain] = email.split("@");
   if (localPart.length <= 2) {
-    return `${localPart}***@${domain}`
+    return `${localPart}***@${domain}`;
   }
-  return `${localPart.substring(0, 2)}***@${domain}`
-}
+  return `${localPart.substring(0, 2)}***@${domain}`;
+};
 
 export function ProfileScreen() {
-  const { isDark, toggle } = useTheme()
-  const [user, setUser] = useState<any>(null)
-  const [loading, setLoading] = useState(true)
-  const [showPasswordModal, setShowPasswordModal] = useState(false)
-  const [showUsernameModal, setShowUsernameModal] = useState(false)
-  const [showExportModal, setShowExportModal] = useState(false)
-  const [currentPassword, setCurrentPassword] = useState('')
-  const [newPassword, setNewPassword] = useState('')
-  const [confirmPassword, setConfirmPassword] = useState('')
-  const [newUsername, setNewUsername] = useState('')
-  const [exportPassword, setExportPassword] = useState('')
-  const [updating, setUpdating] = useState(false)
-  const [exporting, setExporting] = useState(false)
+  const { isDark, toggle } = useTheme();
+  const [user, setUser] = useState<any>(null);
+  const [loading, setLoading] = useState(true);
+  const [showPasswordModal, setShowPasswordModal] = useState(false);
+  const [showUsernameModal, setShowUsernameModal] = useState(false);
+  const [showExportModal, setShowExportModal] = useState(false);
+  const [currentPassword, setCurrentPassword] = useState("");
+  const [newPassword, setNewPassword] = useState("");
+  const [confirmPassword, setConfirmPassword] = useState("");
+  const [newUsername, setNewUsername] = useState("");
+  const [exportPassword, setExportPassword] = useState("");
+  const [updating, setUpdating] = useState(false);
+  const [exporting, setExporting] = useState(false);
 
   useEffect(() => {
-    loadProfile()
-  }, [])
+    loadProfile();
+  }, []);
 
   const loadProfile = async () => {
     try {
-      const userData = await authAPI.getProfile()
-      setUser(userData)
+      const userData = await authAPI.getProfile();
+      setUser(userData);
     } catch (error) {
-      console.error('Failed to load profile:', error)
+      console.error("Failed to load profile:", error);
     } finally {
-      setLoading(false)
+      setLoading(false);
     }
-  }
+  };
 
   const handleLogout = () => {
-    authAPI.logout()
+    authAPI.logout();
     setTimeout(() => {
-      window.location.href = '/'
-    }, 100)
-  }
+      window.location.href = "/";
+    }, 100);
+  };
 
   const handleChangePassword = async () => {
     if (newPassword !== confirmPassword) {
-      toast.error('Passwords do not match')
-      return
+      toast.error("Passwords do not match");
+      return;
     }
 
     if (newPassword.length < 6) {
-      toast.error('Password must be at least 6 characters')
-      return
+      toast.error("Password must be at least 6 characters");
+      return;
     }
 
-    setUpdating(true)
+    setUpdating(true);
     try {
-      await authAPI.changePassword(currentPassword, newPassword)
-      toast.success('Password changed successfully')
-      setShowPasswordModal(false)
-      setCurrentPassword('')
-      setNewPassword('')
-      setConfirmPassword('')
+      await authAPI.changePassword(currentPassword, newPassword);
+      toast.success("Password changed successfully");
+      setShowPasswordModal(false);
+      setCurrentPassword("");
+      setNewPassword("");
+      setConfirmPassword("");
     } catch (error: any) {
-      toast.error(error.response?.data?.message || 'Failed to change password')
+      toast.error(error.response?.data?.message || "Failed to change password");
     } finally {
-      setUpdating(false)
+      setUpdating(false);
     }
-  }
+  };
 
   const handleChangeUsername = async () => {
     if (!newUsername.trim()) {
-      toast.error('Username cannot be empty')
-      return
+      toast.error("Username cannot be empty");
+      return;
     }
 
-    setUpdating(true)
+    setUpdating(true);
     try {
-      const response = await authAPI.changeUsername(newUsername)
-      toast.success('Username changed successfully')
-      setShowUsernameModal(false)
-      setNewUsername('')
-      setUser({ ...user, username: response.user.username })
+      const response = await authAPI.changeUsername(newUsername);
+      toast.success("Username changed successfully");
+      setShowUsernameModal(false);
+      setNewUsername("");
+      setUser({ ...user, username: response.user.username });
     } catch (error: any) {
-      toast.error(error.response?.data?.message || 'Failed to change username')
+      toast.error(error.response?.data?.message || "Failed to change username");
     } finally {
-      setUpdating(false)
+      setUpdating(false);
     }
-  }
+  };
 
   const handleExport = async () => {
     if (!exportPassword.trim()) {
-      toast.error('Enter your password to export your data')
-      return
+      toast.error("Enter your password to export your data");
+      return;
     }
 
-    setExporting(true)
+    setExporting(true);
     try {
-      const exportText = await authAPI.exportData(exportPassword)
-      const blob = new Blob([exportText], { type: 'text/csv;charset=utf-8;' })
-      const downloadUrl = URL.createObjectURL(blob)
-      const link = document.createElement('a')
-      link.href = downloadUrl
-      link.download = `orbit-export-${new Date().toISOString().slice(0, 10)}.csv`
-      document.body.appendChild(link)
-      link.click()
-      link.remove()
-      URL.revokeObjectURL(downloadUrl)
-      setShowExportModal(false)
-      setExportPassword('')
-      toast.success('Export downloaded successfully')
+      const exportText = await authAPI.exportData(exportPassword);
+      const blob = new Blob([exportText], { type: "text/csv;charset=utf-8;" });
+      const downloadUrl = URL.createObjectURL(blob);
+      const link = document.createElement("a");
+      link.href = downloadUrl;
+      link.download = `orbit-export-${new Date().toISOString().slice(0, 10)}.csv`;
+      document.body.appendChild(link);
+      link.click();
+      link.remove();
+      URL.revokeObjectURL(downloadUrl);
+      setShowExportModal(false);
+      setExportPassword("");
+      toast.success("Export downloaded successfully");
     } catch (error: any) {
-      toast.error(error.response?.data?.message || 'Failed to export data')
+      toast.error(error.response?.data?.message || "Failed to export data");
     } finally {
-      setExporting(false)
+      setExporting(false);
     }
-  }
+  };
 
   if (loading) {
     return (
       <div className="min-h-screen flex items-center justify-center">
         <div className="text-center">
           <div className="mx-auto mb-4 h-16 w-16 overflow-hidden rounded-2xl shadow-lg">
-            <Image src="/logo.png" alt="Orbit logo" width={64} height={64} className="h-full w-full object-cover" />
+            <Image
+              src="/logo.png"
+              alt="Orbit logo"
+              width={64}
+              height={64}
+              unoptimized
+              className="h-full w-full object-cover"
+            />
           </div>
           <p className="text-gray-500">Loading profile...</p>
         </div>
       </div>
-    )
+    );
   }
 
   return (
@@ -154,12 +161,24 @@ export function ProfileScreen() {
           <div className="flex flex-col gap-4 lg:flex-row lg:items-center lg:justify-between">
             <div className="flex items-center gap-4">
               <div className="relative h-16 w-16 overflow-hidden rounded-2xl bg-white shadow-lg ring-1 ring-gray-200 dark:bg-gray-800 dark:ring-gray-700">
-                <Image src="/logo.png" alt="Orbit logo" fill className="object-cover" />
+                <Image
+                  src="/logo.png"
+                  alt="Orbit logo"
+                  fill
+                  unoptimized
+                  className="object-cover"
+                />
               </div>
               <div>
-                <p className="text-sm font-semibold uppercase tracking-[0.24em] text-purple-600 dark:text-purple-300">Orbit</p>
-                <h1 className="text-4xl font-bold text-gray-800 dark:text-white">Account cockpit</h1>
-                <p className="text-gray-600 dark:text-gray-400">Manage account, security, appearance, backup, and exports.</p>
+                <p className="text-sm font-semibold uppercase tracking-[0.24em] text-purple-600 dark:text-purple-300">
+                  Orbit
+                </p>
+                <h1 className="text-4xl font-bold text-gray-800 dark:text-white">
+                  Account cockpit
+                </h1>
+                <p className="text-gray-600 dark:text-gray-400">
+                  Manage account, security, appearance, backup, and exports.
+                </p>
               </div>
             </div>
             <button
@@ -172,52 +191,127 @@ export function ProfileScreen() {
         </motion.div>
 
         <div className="grid gap-4 lg:grid-cols-2">
-          <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} className="rounded-3xl bg-white/80 p-6 shadow-lg ring-1 ring-gray-200/80 backdrop-blur dark:bg-gray-900/80 dark:ring-gray-800">
-            <h3 className="text-xl font-bold text-gray-800 dark:text-white">Account</h3>
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            className="rounded-3xl bg-white/80 p-6 shadow-lg ring-1 ring-gray-200/80 backdrop-blur dark:bg-gray-900/80 dark:ring-gray-800"
+          >
+            <h3 className="text-xl font-bold text-gray-800 dark:text-white">
+              Account
+            </h3>
             <div className="mt-4 space-y-4">
-              <ProfileRow label="Username" value={user?.username || 'Not set'} />
-              <ProfileRow label="Email" value={maskEmail(user?.email) || 'Not set'} />
-              <ProfileRow label="Member since" value={user?.createdAt ? new Date(user.createdAt).toLocaleDateString() : 'Unknown'} />
+              <ProfileRow
+                label="Username"
+                value={user?.username || "Not set"}
+              />
+              <ProfileRow
+                label="Email"
+                value={maskEmail(user?.email) || "Not set"}
+              />
+              <ProfileRow
+                label="Member since"
+                value={
+                  user?.createdAt
+                    ? new Date(user.createdAt).toLocaleDateString()
+                    : "Unknown"
+                }
+              />
             </div>
           </motion.div>
 
-          <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.05 }} className="rounded-3xl bg-white/80 p-6 shadow-lg ring-1 ring-gray-200/80 backdrop-blur dark:bg-gray-900/80 dark:ring-gray-800">
-            <h3 className="text-xl font-bold text-gray-800 dark:text-white">Security</h3>
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.05 }}
+            className="rounded-3xl bg-white/80 p-6 shadow-lg ring-1 ring-gray-200/80 backdrop-blur dark:bg-gray-900/80 dark:ring-gray-800"
+          >
+            <h3 className="text-xl font-bold text-gray-800 dark:text-white">
+              Security
+            </h3>
             <div className="mt-4 space-y-3">
-              <ActionButton label="Change Username" tone="purple" onClick={() => setShowUsernameModal(true)} />
-              <ActionButton label="Change Password" tone="blue" onClick={() => setShowPasswordModal(true)} />
+              <ActionButton
+                label="Change Username"
+                tone="purple"
+                onClick={() => setShowUsernameModal(true)}
+              />
+              <ActionButton
+                label="Change Password"
+                tone="blue"
+                onClick={() => setShowPasswordModal(true)}
+              />
             </div>
           </motion.div>
 
-          <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.1 }} className="rounded-3xl bg-white/80 p-6 shadow-lg ring-1 ring-gray-200/80 backdrop-blur dark:bg-gray-900/80 dark:ring-gray-800">
-            <h3 className="text-xl font-bold text-gray-800 dark:text-white">Appearance</h3>
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.1 }}
+            className="rounded-3xl bg-white/80 p-6 shadow-lg ring-1 ring-gray-200/80 backdrop-blur dark:bg-gray-900/80 dark:ring-gray-800"
+          >
+            <h3 className="text-xl font-bold text-gray-800 dark:text-white">
+              Appearance
+            </h3>
             <div className="mt-4 flex items-center justify-between gap-4">
               <div>
-                <p className="font-semibold text-gray-800 dark:text-white">Theme</p>
-                <p className="text-sm text-gray-600 dark:text-gray-400">Toggle between light and dark modes.</p>
+                <p className="font-semibold text-gray-800 dark:text-white">
+                  Theme
+                </p>
+                <p className="text-sm text-gray-600 dark:text-gray-400">
+                  Toggle between light and dark modes.
+                </p>
               </div>
               <button
                 onClick={toggle}
-                className={`relative h-8 w-16 rounded-full transition-colors ${isDark ? 'bg-purple-500' : 'bg-gray-300'}`}
+                className={`relative h-8 w-16 rounded-full transition-colors ${isDark ? "bg-purple-500" : "bg-gray-300"}`}
               >
-                <div className={`absolute top-1 h-6 w-6 rounded-full bg-white transition-transform ${isDark ? 'left-9' : 'left-1'}`} />
+                <div
+                  className={`absolute top-1 h-6 w-6 rounded-full bg-white transition-transform ${isDark ? "left-9" : "left-1"}`}
+                />
               </button>
             </div>
           </motion.div>
 
-          <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.15 }} className="rounded-3xl bg-white/80 p-6 shadow-lg ring-1 ring-gray-200/80 backdrop-blur dark:bg-gray-900/80 dark:ring-gray-800">
-            <h3 className="text-xl font-bold text-gray-800 dark:text-white">Backup</h3>
-            <p className="mt-3 text-sm text-gray-600 dark:text-gray-400">Download a CSV export of your account data for local archiving or migration.</p>
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.15 }}
+            className="rounded-3xl bg-white/80 p-6 shadow-lg ring-1 ring-gray-200/80 backdrop-blur dark:bg-gray-900/80 dark:ring-gray-800"
+          >
+            <h3 className="text-xl font-bold text-gray-800 dark:text-white">
+              Backup
+            </h3>
+            <p className="mt-3 text-sm text-gray-600 dark:text-gray-400">
+              Download a CSV export of your account data for local archiving or
+              migration.
+            </p>
             <div className="mt-4 flex flex-wrap gap-3">
-              <ActionButton label="Open Export" tone="dark" onClick={() => setShowExportModal(true)} />
-              <ActionButton label="Refresh Profile" tone="gray" onClick={loadProfile} />
+              <ActionButton
+                label="Open Export"
+                tone="dark"
+                onClick={() => setShowExportModal(true)}
+              />
+              <ActionButton
+                label="Refresh Profile"
+                tone="gray"
+                onClick={loadProfile}
+              />
             </div>
           </motion.div>
         </div>
 
-        <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.2 }} className="rounded-3xl bg-white/80 p-6 shadow-lg ring-1 ring-gray-200/80 backdrop-blur dark:bg-gray-900/80 dark:ring-gray-800">
-          <h3 className="text-xl font-bold text-gray-800 dark:text-white">Export</h3>
-          <p className="mt-3 text-sm text-gray-600 dark:text-gray-400">Re-enter your password and download a fresh archive of your Orbit data.</p>
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.2 }}
+          className="rounded-3xl bg-white/80 p-6 shadow-lg ring-1 ring-gray-200/80 backdrop-blur dark:bg-gray-900/80 dark:ring-gray-800"
+        >
+          <h3 className="text-xl font-bold text-gray-800 dark:text-white">
+            Export
+          </h3>
+          <p className="mt-3 text-sm text-gray-600 dark:text-gray-400">
+            Re-enter your password and download a fresh archive of your Orbit
+            data.
+          </p>
           <div className="mt-4 flex flex-wrap gap-3">
             <button
               onClick={() => setShowExportModal(true)}
@@ -228,7 +322,12 @@ export function ProfileScreen() {
           </div>
         </motion.div>
 
-        <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 0.25 }} className="text-center text-sm text-gray-500 dark:text-gray-400">
+        <motion.div
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{ delay: 0.25 }}
+          className="text-center text-sm text-gray-500 dark:text-gray-400"
+        >
           <p>Orbit</p>
           <p className="mt-1">Version 1.0.0</p>
         </motion.div>
@@ -243,7 +342,9 @@ export function ProfileScreen() {
             className="bg-white dark:bg-gray-900 rounded-2xl shadow-2xl max-w-md w-full p-6 space-y-4"
           >
             <div className="flex items-center justify-between">
-              <h3 className="text-2xl font-bold text-gray-800 dark:text-white">Change Password</h3>
+              <h3 className="text-2xl font-bold text-gray-800 dark:text-white">
+                Change Password
+              </h3>
               <button
                 onClick={() => setShowPasswordModal(false)}
                 className="text-gray-400 hover:text-gray-600 dark:hover:text-gray-200 text-2xl"
@@ -306,7 +407,7 @@ export function ProfileScreen() {
                 disabled={updating}
                 className="px-4 py-2 rounded-lg bg-purple-500 text-white font-semibold hover:bg-purple-600 disabled:opacity-50"
               >
-                {updating ? 'Changing...' : 'Change Password'}
+                {updating ? "Changing..." : "Change Password"}
               </button>
             </div>
           </motion.div>
@@ -315,13 +416,26 @@ export function ProfileScreen() {
 
       {showExportModal && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 p-4 backdrop-blur-sm">
-          <motion.div initial={{ opacity: 0, scale: 0.95 }} animate={{ opacity: 1, scale: 1 }} className="w-full max-w-md space-y-4 rounded-2xl bg-white p-6 shadow-2xl dark:bg-gray-900">
+          <motion.div
+            initial={{ opacity: 0, scale: 0.95 }}
+            animate={{ opacity: 1, scale: 1 }}
+            className="w-full max-w-md space-y-4 rounded-2xl bg-white p-6 shadow-2xl dark:bg-gray-900"
+          >
             <div className="flex items-center justify-between">
-              <h3 className="text-2xl font-bold text-gray-800 dark:text-white">Export data</h3>
-              <button onClick={() => setShowExportModal(false)} className="text-2xl text-gray-400 hover:text-gray-600 dark:hover:text-gray-200">×</button>
+              <h3 className="text-2xl font-bold text-gray-800 dark:text-white">
+                Export data
+              </h3>
+              <button
+                onClick={() => setShowExportModal(false)}
+                className="text-2xl text-gray-400 hover:text-gray-600 dark:hover:text-gray-200"
+              >
+                ×
+              </button>
             </div>
             <div>
-              <label className="mb-2 block text-sm font-medium text-gray-700 dark:text-gray-300">Password</label>
+              <label className="mb-2 block text-sm font-medium text-gray-700 dark:text-gray-300">
+                Password
+              </label>
               <input
                 type="password"
                 value={exportPassword}
@@ -331,9 +445,18 @@ export function ProfileScreen() {
               />
             </div>
             <div className="flex justify-end gap-2 pt-2">
-              <button onClick={() => setShowExportModal(false)} className="rounded-lg bg-gray-100 px-4 py-2 font-semibold text-gray-700 hover:bg-gray-200 dark:bg-gray-800 dark:text-gray-200 dark:hover:bg-gray-700">Cancel</button>
-              <button onClick={handleExport} disabled={exporting} className="rounded-lg bg-purple-500 px-4 py-2 font-semibold text-white hover:bg-purple-600 disabled:opacity-50">
-                {exporting ? 'Exporting...' : 'Download'}
+              <button
+                onClick={() => setShowExportModal(false)}
+                className="rounded-lg bg-gray-100 px-4 py-2 font-semibold text-gray-700 hover:bg-gray-200 dark:bg-gray-800 dark:text-gray-200 dark:hover:bg-gray-700"
+              >
+                Cancel
+              </button>
+              <button
+                onClick={handleExport}
+                disabled={exporting}
+                className="rounded-lg bg-purple-500 px-4 py-2 font-semibold text-white hover:bg-purple-600 disabled:opacity-50"
+              >
+                {exporting ? "Exporting..." : "Download"}
               </button>
             </div>
           </motion.div>
@@ -349,7 +472,9 @@ export function ProfileScreen() {
             className="bg-white dark:bg-gray-900 rounded-2xl shadow-2xl max-w-md w-full p-6 space-y-4"
           >
             <div className="flex items-center justify-between">
-              <h3 className="text-2xl font-bold text-gray-800 dark:text-white">Change Username</h3>
+              <h3 className="text-2xl font-bold text-gray-800 dark:text-white">
+                Change Username
+              </h3>
               <button
                 onClick={() => setShowUsernameModal(false)}
                 className="text-gray-400 hover:text-gray-600 dark:hover:text-gray-200 text-2xl"
@@ -394,36 +519,51 @@ export function ProfileScreen() {
                 disabled={updating}
                 className="px-4 py-2 rounded-lg bg-purple-500 text-white font-semibold hover:bg-purple-600 disabled:opacity-50"
               >
-                {updating ? 'Changing...' : 'Change Username'}
+                {updating ? "Changing..." : "Change Username"}
               </button>
             </div>
           </motion.div>
         </div>
       )}
     </div>
-  )
+  );
 }
 
 function ProfileRow({ label, value }: { label: string; value: string }) {
   return (
     <div>
-      <p className="text-sm font-medium text-gray-600 dark:text-gray-400">{label}</p>
-      <p className="mt-1 text-lg font-semibold text-gray-800 dark:text-white">{value}</p>
+      <p className="text-sm font-medium text-gray-600 dark:text-gray-400">
+        {label}
+      </p>
+      <p className="mt-1 text-lg font-semibold text-gray-800 dark:text-white">
+        {value}
+      </p>
     </div>
-  )
+  );
 }
 
-function ActionButton({ label, tone, onClick }: { label: string; tone: 'purple' | 'blue' | 'dark' | 'gray'; onClick: () => void }) {
+function ActionButton({
+  label,
+  tone,
+  onClick,
+}: {
+  label: string;
+  tone: "purple" | "blue" | "dark" | "gray";
+  onClick: () => void;
+}) {
   const tones = {
-    purple: 'bg-purple-500 text-white hover:bg-purple-600',
-    blue: 'bg-blue-500 text-white hover:bg-blue-600',
-    dark: 'bg-gray-900 text-white hover:bg-gray-800 dark:bg-white dark:text-gray-900 dark:hover:bg-gray-100',
-    gray: 'bg-gray-100 text-gray-700 hover:bg-gray-200 dark:bg-gray-800 dark:text-gray-200 dark:hover:bg-gray-700',
-  }
+    purple: "bg-purple-500 text-white hover:bg-purple-600",
+    blue: "bg-blue-500 text-white hover:bg-blue-600",
+    dark: "bg-gray-900 text-white hover:bg-gray-800 dark:bg-white dark:text-gray-900 dark:hover:bg-gray-100",
+    gray: "bg-gray-100 text-gray-700 hover:bg-gray-200 dark:bg-gray-800 dark:text-gray-200 dark:hover:bg-gray-700",
+  };
 
   return (
-    <button onClick={onClick} className={`rounded-full px-4 py-2 text-sm font-semibold transition ${tones[tone]}`}>
+    <button
+      onClick={onClick}
+      className={`rounded-full px-4 py-2 text-sm font-semibold transition ${tones[tone]}`}
+    >
       {label}
     </button>
-  )
+  );
 }

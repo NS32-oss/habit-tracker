@@ -201,7 +201,13 @@ export function HomeScreen({ onNavigate }: HomeScreenProps) {
           <div className="flex flex-col gap-4 lg:flex-row lg:items-center lg:justify-between">
             <div className="flex items-center gap-4">
               <div className="relative h-16 w-16 overflow-hidden rounded-2xl bg-white shadow-lg ring-1 ring-gray-200 dark:bg-gray-800 dark:ring-gray-700">
-                <Image src="/logo.png" alt="Orbit logo" fill className="object-cover" />
+                <Image
+  src="/logo.png"
+  alt="Orbit logo"
+  fill
+  unoptimized
+  className="object-cover"
+/>
               </div>
               <div>
                 <p className="text-sm font-semibold uppercase tracking-[0.24em] text-purple-600 dark:text-purple-300">Orbit</p>
