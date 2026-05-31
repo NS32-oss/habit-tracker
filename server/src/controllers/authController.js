@@ -230,7 +230,7 @@ export const logout = async (req, res, next) => {
 export const exportUserData = async (req, res, next) => {
   try {
     const { password } = req.body;
-    const userId = req.user._id; // From authMiddleware
+    const userId = req.userId; // From authMiddleware
 
     // Re-verify password for security
     const user = await User.findById(userId).select('+password');

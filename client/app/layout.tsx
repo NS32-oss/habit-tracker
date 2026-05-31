@@ -9,8 +9,8 @@ const _geist = Geist({ subsets: ["latin"] });
 const _geistMono = Geist_Mono({ subsets: ["latin"] });
 
 export const metadata: Metadata = {
-  title: 'Purrfect Habits',
-  description: 'Track your daily habits with your cute cat companion',
+  title: 'Orbit',
+  description: 'Orbit is a productivity command center for habits, tasks, and finance',
   manifest: '/manifest.json',
 }
 

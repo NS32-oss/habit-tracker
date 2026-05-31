@@ -1,11 +1,12 @@
 "use client"
 
 import { useState, useEffect } from "react"
+import Image from "next/image"
 import { MobileNav, type TabType } from "@/components/mobile-nav"
 import { HomeScreen } from "@/components/screens/home-screen"
-import { AnalyticsScreen } from "@/components/screens/analytics-screen"
 import { ProfileScreen } from "@/components/screens/profile-screen"
-import { JourneyView } from "@/components/screens/journey-view"
+import { ToDoScreen } from "@/components/screens/todo-screen"
+import { ExpenseTrackerScreen as FinanceScreen } from "@/components/screens/expense-tracker-screen"
 import { DailyHabitsScreen } from "@/components/screens/daily-habits-screen"
 import { AddHabitFlow } from "@/components/add-habit-flow"
 import { AuthScreen } from "@/components/auth-screen"
@@ -31,7 +32,11 @@ export default function HabitTracker() {
 
   useEffect(() => {
     const savedTab = localStorage.getItem('activeTab')
-    if (savedTab && ['home', 'journey', 'daily', 'analytics', 'profile', 'habits'].includes(savedTab)) {
+    if (savedTab === 'analytics' || savedTab === 'expense') {
+      setActiveTab('finance')
+      return
+    }
+    if (savedTab && ['home', 'todo', 'daily', 'finance', 'profile', 'habits'].includes(savedTab)) {
       setActiveTab(savedTab as TabType)
     }
   }, [])
@@ -82,7 +87,9 @@ export default function HabitTracker() {
     return (
       <div className="min-h-screen bg-background flex items-center justify-center">
         <div className="text-center">
-          <div className="text-6xl mb-4 animate-bounce">🐱</div>
+          <div className="mx-auto mb-4 h-16 w-16 overflow-hidden rounded-2xl shadow-lg">
+            <Image src="/logo.png" alt="Orbit logo" width={64} height={64} className="h-full w-full object-cover" />
+          </div>
           <p className="text-slate-500 font-medium">Loading...</p>
         </div>
       </div>
@@ -95,7 +102,7 @@ export default function HabitTracker() {
 
   return (
     <main className="min-h-screen bg-background relative selection:bg-primary/20">
-      <div className="max-w-7xl mx-auto min-h-screen pb-20 lg:pb-8 relative">
+      <div className="page-shell min-h-screen pb-20 lg:pb-8 relative">
         <AnimatePresence mode="wait">
           {activeTab === "home" && (
             <motion.div
@@ -105,18 +112,18 @@ export default function HabitTracker() {
               exit={{ opacity: 0, x: 20 }}
               transition={{ duration: 0.3 }}
             >
-              <HomeScreen key={refreshKey} />
+              <HomeScreen key={refreshKey} onNavigate={setActiveTab} />
             </motion.div>
           )}
-          {activeTab === "journey" && (
+          {activeTab === "todo" && (
             <motion.div
-              key="journey"
+              key="todo"
               initial={{ opacity: 0, x: 20 }}
               animate={{ opacity: 1, x: 0 }}
               exit={{ opacity: 0, x: -20 }}
               transition={{ duration: 0.3 }}
             >
-              <JourneyView />
+              <ToDoScreen key={refreshKey} />
             </motion.div>
           )}
           {activeTab === "daily" && (
@@ -130,15 +137,15 @@ export default function HabitTracker() {
               <DailyHabitsScreen />
             </motion.div>
           )}
-          {activeTab === "analytics" && (
+          {activeTab === "finance" && (
             <motion.div
-              key="analytics"
+              key="finance"
               initial={{ opacity: 0, scale: 0.9 }}
               animate={{ opacity: 1, scale: 1 }}
               exit={{ opacity: 0, scale: 0.9 }}
               transition={{ duration: 0.3 }}
             >
-              <AnalyticsScreen />
+              <FinanceScreen />
             </motion.div>
           )}
           {activeTab === "profile" && (
@@ -161,13 +168,13 @@ export default function HabitTracker() {
               className="flex items-center justify-center min-h-[80vh] px-10 text-center"
             >
               <div className="glass p-10 rounded-[3rem]">
-                <div className="text-6xl mb-4">💤</div>
-                <h2 className="text-2xl font-black text-slate-800 dark:text-slate-100 mb-2">Habits List</h2>
-                <p className="text-slate-500 dark:text-slate-400 font-medium italic">Sorting your habits into cute piles...</p>
+                <div className="text-6xl mb-4">🗂️</div>
+                <h2 className="text-2xl font-black text-slate-800 dark:text-slate-100 mb-2">Habit Archive</h2>
+                <p className="text-slate-500 dark:text-slate-400 font-medium italic">This section is reserved for legacy habit organization.</p>
               </div>
             </motion.div>
           )}
-          {!['home', 'journey', 'analytics', 'profile', 'habits', 'daily'].includes(activeTab) && (
+          {!['home', 'todo', 'finance', 'profile', 'habits', 'daily'].includes(activeTab) && (
             <motion.div
               key="placeholder"
               initial={{ opacity: 0 }}

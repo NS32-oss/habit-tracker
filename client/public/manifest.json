@@ -1,7 +1,7 @@
 {
-  "name": "Purrfect Habits",
-  "short_name": "Habits",
-  "description": "Track your daily habits with your cute cat companion",
+  "name": "Orbit",
+  "short_name": "Orbit",
+  "description": "Orbit is a productivity command center for habits, tasks, and finance",
   "start_url": "/",
   "display": "standalone",
   "orientation": "portrait",
@@ -13,9 +13,9 @@
   ],
   "icons": [
     {
-      "src": "/icon.svg",
-      "sizes": "any",
-      "type": "image/svg+xml"
+      "src": "/logo.png",
+      "sizes": "512x512",
+      "type": "image/png"
     },
     {
       "src": "/maskable-icon.svg",

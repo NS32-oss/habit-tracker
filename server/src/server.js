@@ -8,8 +8,9 @@ import habitRoutes from './routes/habits.js'
 import streakRoutes from './routes/streaks.js'
 import challengeRoutes from './routes/challenges.js'
 import analyticsRoutes from './routes/analytics.js'
-import catRoutes from './routes/cat.js'
 import dayNoteRoutes from './routes/dayNotes.js'
+import taskRoutes from './routes/tasks.js'
+import expenseRoutes from './routes/expenses.js'
 import { errorHandler } from './middlewares/errorHandler.js'
 
 // Load environment variables
@@ -54,8 +55,9 @@ app.use('/api/v1/habits', habitRoutes)
 app.use('/api/v1/streaks', streakRoutes)
 app.use('/api/v1/challenges', challengeRoutes)
 app.use('/api/v1/analytics', analyticsRoutes)
-app.use('/api/v1/cat', catRoutes)
 app.use('/api/v1/day-notes', dayNoteRoutes)
+app.use('/api/v1/tasks', taskRoutes)
+app.use('/api/v1/expenses', expenseRoutes)
 
 // Error handling
 app.use(errorHandler)

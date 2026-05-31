@@ -202,8 +202,8 @@ export function DailyHabitsScreen() {
   }
 
   return (
-    <div className="min-h-screen bg-linear-to-br from-purple-50 via-pink-50 to-blue-50 dark:from-gray-900 dark:via-purple-900/10 dark:to-gray-900 p-4 pb-17">
-      <div className="max-w-7xl mx-auto space-y-6">
+    <div className="min-h-screen bg-linear-to-br from-purple-50 via-pink-50 to-blue-50 dark:from-gray-900 dark:via-purple-900/10 dark:to-gray-900 page-shell py-4 pb-17">
+      <div className="space-y-6">
         <motion.div
           initial={{ opacity: 0, y: -20 }}
           animate={{ opacity: 1, y: 0 }}
@@ -233,38 +233,73 @@ export function DailyHabitsScreen() {
           </div>
         </motion.div>
 
-        {stats?.weeklyData && stats.weeklyData.length > 0 && (
-          <div className="bg-white dark:bg-gray-800 rounded-xl p-6">
-            {/* Legend */}
-            <div className="flex items-center gap-4 mb-5 pb-4 border-b border-gray-200 dark:border-gray-700 text-xs">
-              <div className="flex items-center gap-2">
-                <div className="h-2 w-2 rounded bg-red-400" />
-                <span>Struggle</span>
-              </div>
-              <div className="flex items-center gap-2">
-                <div className="h-2 w-2 rounded bg-yellow-400" />
-                <span>Mixed</span>
-              </div>
-              <div className="flex items-center gap-2">
-                <div className="h-2 w-2 rounded bg-emerald-400" />
-                <span>Victory</span>
-              </div>
-            </div>
-
-            {/* Weekday headers */}
-            <div className="grid grid-cols-7 gap-2 mb-3">
-              {['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'].map(day => (
-                <div key={day} className="text-center text-xs font-bold text-gray-500 dark:text-gray-400 py-2">
-                  {day}
+        <div className="dashboard-grid items-start">
+          <div className="space-y-6">
+            {stats?.weeklyData && stats.weeklyData.length > 0 && (
+              <div className="card-surface p-6">
+                {/* Legend */}
+                <div className="flex items-center gap-4 mb-5 pb-4 border-b border-gray-200 dark:border-gray-700 text-xs">
+                  <div className="flex items-center gap-2">
+                    <div className="h-2 w-2 rounded bg-red-400" />
+                    <span>Struggle</span>
+                  </div>
+                  <div className="flex items-center gap-2">
+                    <div className="h-2 w-2 rounded bg-yellow-400" />
+                    <span>Mixed</span>
+                  </div>
+                  <div className="flex items-center gap-2">
+                    <div className="h-2 w-2 rounded bg-emerald-400" />
+                    <span>Victory</span>
+                  </div>
                 </div>
-              ))}
+
+                {/* Weekday headers */}
+                <div className="grid grid-cols-7 gap-2 mb-3">
+                  {['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'].map(day => (
+                    <div key={day} className="text-center text-xs font-bold text-gray-500 dark:text-gray-400 py-2">
+                      {day}
+                    </div>
+                  ))}
+                </div>
+
+                <div className="grid grid-cols-7 gap-2">
+                  {calendarCells}
+                </div>
+              </div>
+            )}
+          </div>
+
+          <aside className="space-y-4 xl:sticky xl:top-6 self-start">
+            <div className="card-surface p-5">
+              <p className="text-sm font-semibold uppercase tracking-[0.2em] text-gray-500 dark:text-gray-400">Journal</p>
+              <h3 className="mt-1 text-2xl font-bold text-gray-800 dark:text-white">Daily notes</h3>
+              <p className="mt-2 text-sm text-gray-500 dark:text-gray-400">Open today&apos;s entry, review recent notes, and keep your month in view.</p>
+              <div className="mt-4 flex flex-wrap gap-2">
+                <button onClick={() => setGeneralModal({ date: dayjs().format('YYYY-MM-DD'), note: generalNotes[dayjs().format('YYYY-MM-DD')] || '' })} className="rounded-full bg-purple-600 px-4 py-2 text-sm font-semibold text-white shadow-lg">
+                  Open today
+                </button>
+                <button onClick={() => setNoteModal({ date: dayjs().format('YYYY-MM-DD'), notes: [] })} className="rounded-full bg-white px-4 py-2 text-sm font-semibold text-gray-700 ring-1 ring-gray-200 dark:bg-gray-800 dark:text-gray-200 dark:ring-gray-700">
+                  Habit notes
+                </button>
+              </div>
             </div>
 
-            <div className="grid grid-cols-7 gap-2">
-              {calendarCells}
+            <div className="card-surface p-5">
+              <p className="text-sm font-semibold uppercase tracking-[0.2em] text-gray-500 dark:text-gray-400">Recent notes</p>
+              <div className="mt-3 space-y-3 max-h-112 overflow-auto pr-1">
+                {Object.entries(generalNotes).slice(-5).reverse().map(([date, note]) => (
+                  <button key={date} onClick={() => setGeneralModal({ date, note })} className="w-full rounded-2xl bg-gray-50 p-4 text-left ring-1 ring-gray-200 transition hover:bg-purple-50 dark:bg-gray-800 dark:ring-gray-700 dark:hover:bg-purple-900/20">
+                    <p className="text-sm font-semibold text-gray-800 dark:text-white">{dayjs(date).format('MMM D, YYYY')}</p>
+                    <p className="mt-1 line-clamp-3 text-sm text-gray-500 dark:text-gray-400">{htmlToPlainText(note || '') || 'No note'}</p>
+                  </button>
+                ))}
+                {Object.keys(generalNotes).length === 0 && (
+                  <p className="text-sm text-gray-500 dark:text-gray-400">No journal entries yet.</p>
+                )}
+              </div>
             </div>
-          </div>
-        )}
+          </aside>
+        </div>
       </div>
 
       {noteModal && (

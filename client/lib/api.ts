@@ -107,6 +107,11 @@ export const authAPI = {
     const response = await api.post('/auth/change-username', { username })
     return response.data
   },
+
+  exportData: async (password: string) => {
+    const response = await api.post('/auth/export', { password }, { responseType: 'text' })
+    return response.data as string
+  },
 }
 
 export const habitAPI = {
@@ -226,14 +231,183 @@ export const dayNotesAPI = {
   },
 }
 
-export const catAPI = {
-  getMood: async () => {
-    const response = await api.get('/cat/mood')
+export const taskAPI = {
+  getAll: async (filter = 'all', sortBy = 'dueDate', search = '', categoryFilter = '') => {
+    const response = await api.get('/tasks', { 
+      params: { filter, sortBy, search, categoryFilter } 
+    })
     return response.data
   },
 
   getStats: async () => {
-    const response = await api.get('/cat/stats')
+    const response = await api.get('/tasks/stats')
+    return response.data
+  },
+
+  getById: async (taskId: string) => {
+    const response = await api.get(`/tasks/${taskId}`)
+    return response.data
+  },
+
+  create: async (data: any) => {
+    const response = await api.post('/tasks', data)
+    return response.data
+  },
+
+  update: async (taskId: string, updates: any) => {
+    const response = await api.put(`/tasks/${taskId}`, updates)
+    return response.data
+  },
+
+  toggle: async (taskId: string) => {
+    const response = await api.patch(`/tasks/${taskId}/toggle`)
+    return response.data
+  },
+
+  delete: async (taskId: string) => {
+    const response = await api.delete(`/tasks/${taskId}`)
+    return response.data
+  },
+
+  archive: async (taskId: string) => {
+    const response = await api.patch(`/tasks/${taskId}/archive`)
+    return response.data
+  },
+
+  addSubtask: async (taskId: string, title: string) => {
+    const response = await api.post(`/tasks/${taskId}/subtasks`, { title })
+    return response.data
+  },
+
+  toggleSubtask: async (taskId: string, subtaskId: string) => {
+    const response = await api.patch(`/tasks/${taskId}/subtasks/${subtaskId}/toggle`)
+    return response.data
+  },
+
+  deleteSubtask: async (taskId: string, subtaskId: string) => {
+    const response = await api.delete(`/tasks/${taskId}/subtasks/${subtaskId}`)
+    return response.data
+  },
+
+  addNote: async (taskId: string, content: string) => {
+    const response = await api.post(`/tasks/${taskId}/notes`, { content })
+    return response.data
+  },
+
+  bulkUpdate: async (updates: any[]) => {
+    const response = await api.post('/tasks/bulk/update', { updates })
+    return response.data
+  },
+}
+
+export const expenseAPI = {
+  getOverview: async () => {
+    const response = await api.get('/expenses/overview')
+    return response.data
+  },
+
+  getTransactions: async (params: {
+    search?: string
+    type?: string
+    category?: string
+    paymentMethod?: string
+    sortBy?: string
+    recurring?: boolean
+    archived?: boolean
+    startDate?: string
+    endDate?: string
+    limit?: number
+  } = {}) => {
+    const response = await api.get('/expenses/transactions', {
+      params: {
+        ...params,
+        recurring: typeof params.recurring === 'boolean' ? String(params.recurring) : undefined,
+        archived: typeof params.archived === 'boolean' ? String(params.archived) : undefined,
+      },
+    })
+    return response.data
+  },
+
+  getTransactionById: async (transactionId: string) => {
+    const response = await api.get(`/expenses/transactions/${transactionId}`)
+    return response.data
+  },
+
+  createTransaction: async (data: any) => {
+    const response = await api.post('/expenses/transactions', data)
+    return response.data
+  },
+
+  updateTransaction: async (transactionId: string, updates: any) => {
+    const response = await api.put(`/expenses/transactions/${transactionId}`, updates)
+    return response.data
+  },
+
+  deleteTransaction: async (transactionId: string) => {
+    const response = await api.delete(`/expenses/transactions/${transactionId}`)
+    return response.data
+  },
+
+  duplicateTransaction: async (transactionId: string) => {
+    const response = await api.post(`/expenses/transactions/${transactionId}/duplicate`)
+    return response.data
+  },
+
+  bulkDeleteTransactions: async (ids: string[]) => {
+    const response = await api.post('/expenses/transactions/bulk-delete', { ids })
+    return response.data
+  },
+
+  bulkUpdateTransactions: async (ids: string[], updates: any) => {
+    const response = await api.post('/expenses/transactions/bulk-update', { ids, updates })
+    return response.data
+  },
+
+  getBudgets: async () => {
+    const response = await api.get('/expenses/budgets')
+    return response.data
+  },
+
+  createBudget: async (data: any) => {
+    const response = await api.post('/expenses/budgets', data)
+    return response.data
+  },
+
+  updateBudget: async (budgetId: string, updates: any) => {
+    const response = await api.put(`/expenses/budgets/${budgetId}`, updates)
+    return response.data
+  },
+
+  deleteBudget: async (budgetId: string) => {
+    const response = await api.delete(`/expenses/budgets/${budgetId}`)
+    return response.data
+  },
+
+  getGoals: async () => {
+    const response = await api.get('/expenses/goals')
+    return response.data
+  },
+
+  createGoal: async (data: any) => {
+    const response = await api.post('/expenses/goals', data)
+    return response.data
+  },
+
+  updateGoal: async (goalId: string, updates: any) => {
+    const response = await api.put(`/expenses/goals/${goalId}`, updates)
+    return response.data
+  },
+
+  deleteGoal: async (goalId: string) => {
+    const response = await api.delete(`/expenses/goals/${goalId}`)
+    return response.data
+  },
+
+  exportData: async (format: 'csv' | 'json' = 'json') => {
+    const response = await api.get('/expenses/export', {
+      params: { format },
+      responseType: format === 'csv' ? 'text' : 'json',
+    })
     return response.data
   },
 }

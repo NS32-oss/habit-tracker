@@ -9,7 +9,7 @@
 
 ## 🎯 Project Overview
 
-HabbitTracker is a full-stack web application for building better habits with the help of a cute cat mascot. The project includes a complete backend API, responsive frontend, and all 21 critical fixes implemented.
+Orbit is a full-stack web application for building habits, tasks, and finance workflows in one command center. The project includes a complete backend API, responsive frontend, and all 21 critical fixes implemented.
 
 ### Key Features
 - ✅ User authentication with secure JWT tokens
@@ -17,7 +17,7 @@ HabbitTracker is a full-stack web application for building better habits with th
 - ✅ Streak calculation with intelligent day skipping
 - ✅ Challenges with progress tracking
 - ✅ Comprehensive analytics dashboard
-- ✅ Cat mascot mood system
+- ✅ Orbit productivity score system
 - ✅ Dark mode support
 - ✅ Mobile-responsive design
 
@@ -198,7 +198,7 @@ HabbitTracker/
 - [ ] Dark mode toggle
 - [ ] Email masking in profile
 - [ ] Navigation tabs (5 main + overflow)
-- [ ] Cat mascot mood changes
+- [ ] Orbit score updates
 
 ### Integration Tests
 - [ ] API endpoints respond correctly
@@ -438,7 +438,7 @@ For issues or questions:
 
 ---
 
-**🐱 HabbitTracker v1.0.0 - Complete & Ready!** 
+**Orbit v1.0.0 - Complete & Ready!** 
 
 All systems go for launch! 🚀
 

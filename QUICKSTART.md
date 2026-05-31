@@ -267,4 +267,4 @@ Need help? Check these files:
 
 **That's it!** You now have HabbitTracker running locally. 🎉
 
-Start building better habits today! 🐱
+Start building with Orbit today!

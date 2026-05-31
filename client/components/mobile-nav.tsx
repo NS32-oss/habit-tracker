@@ -2,7 +2,7 @@
 
 import { motion } from 'framer-motion'
 
-export type TabType = 'home' | 'journey' | 'analytics' | 'profile' | 'habits' | 'daily'
+export type TabType = 'home' | 'todo' | 'finance' | 'profile' | 'habits' | 'daily'
 
 interface MobileNavProps {
   activeTab: TabType
@@ -13,8 +13,8 @@ export function MobileNav({ activeTab, onTabChange }: MobileNavProps) {
   const mainTabs = [
     { id: 'home' as TabType, icon: '🏠', label: 'Home' },
     { id: 'daily' as TabType, icon: '📅', label: 'Daily' },
-    { id: 'journey' as TabType, icon: '🗺️', label: 'Journey' },
-    { id: 'analytics' as TabType, icon: '📊', label: 'Stats' },
+    { id: 'todo' as TabType, icon: '✅', label: 'To-Do' },
+    { id: 'finance' as TabType, icon: '💳', label: 'Finance' },
     { id: 'profile' as TabType, icon: '👤', label: 'Profile' },
   ]
 

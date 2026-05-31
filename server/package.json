@@ -1,8 +1,8 @@
 {
-  "name": "purrfect-habits-server",
+  "name": "orbit-server",
   "version": "1.0.0",
   "type": "module",
-  "description": "Express backend for Purrfect Habits tracker",
+  "description": "Express backend for Orbit",
   "main": "src/server.js",
   "scripts": {
     "start": "node src/server.js",

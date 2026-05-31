@@ -3,6 +3,7 @@
 import { useState } from 'react'
 import { authAPI } from '@/lib/api'
 import { motion } from 'framer-motion'
+import Image from 'next/image'
 
 interface AuthScreenProps {
   onSuccess: () => void
@@ -48,18 +49,14 @@ export function AuthScreen({ onSuccess }: AuthScreenProps) {
       >
         <div className="text-center mb-8">
           <motion.div
-            className="text-8xl mb-4"
-            animate={{ rotate: [0, 10, -10, 0] }}
-            transition={{ duration: 2, repeat: Infinity, repeatDelay: 3 }}
+            className="mb-4 flex justify-center"
+            animate={{ y: [0, -6, 0] }}
+            transition={{ duration: 3, repeat: Infinity, repeatType: 'mirror' }}
           >
-            🐱
+            <Image src="/logo.png" alt="Orbit logo" width={96} height={96} className="h-24 w-24 rounded-3xl shadow-xl" />
           </motion.div>
-          <h1 className="text-4xl font-bold text-gray-800 dark:text-white mb-2">
-            Purrfect Habits
-          </h1>
-          <p className="text-gray-600 dark:text-gray-400">
-            Build better habits with your cute cat companion
-          </p>
+          <h1 className="text-4xl font-bold text-gray-800 dark:text-white mb-2">Orbit</h1>
+          <p className="text-gray-600 dark:text-gray-400">Build momentum across habits, tasks, and finance</p>
         </div>
 
         <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-xl p-8">

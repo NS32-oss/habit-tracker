@@ -26,11 +26,6 @@ export const API_ENDPOINTS = {
     JOIN: (id: string) => `/challenges/${id}/join`,
     LEAVE: (id: string) => `/challenges/${id}/leave`,
   },
-  CAT: {
-    STATUS: "/cat/status",
-    FEED: "/cat/feed",
-    PLAY: "/cat/play",
-  },
 };
 
 export const COLORS = {
@@ -145,13 +140,9 @@ export const STREAK_MILESTONES = [
   { days: 365, label: "Year Legend", emoji: "🌟" },
 ];
 
-export const CAT_MOODS = {
-  happy: { emoji: "😸", label: "Happy" },
-  normal: { emoji: "😺", label: "Normal" },
-  hungry: { emoji: "😿", label: "Hungry" },
-  sleepy: { emoji: "😴", label: "Sleepy" },
-  playful: { emoji: "😻", label: "Playful" },
-  sick: { emoji: "🙀", label: "Sick" },
+export const ORBIT_BRAND = {
+  name: "Orbit",
+  shortName: "Orbit",
 };
 
 export const THEME_COLORS = {

@@ -1,4 +1,4 @@
-# 🐱 **Habbit Tracker - Comprehensive Feature Documentation**
+# **Orbit - Comprehensive Feature Documentation**
 
 > **Version:** 1.0.0 | **Last Updated:** January 2, 2026 | **Status:** Production Ready
 
@@ -14,7 +14,7 @@
 7. [Challenge System](#7-challenge-system)
 8. [Analytics Dashboard](#8-analytics-screen)
 9. [Habit Detail Modal](#9-habit-detail-modal)
-10. [Cat Mascot](#10-cat-mascot-dynamic-companion)
+10. [Orbit Dashboard](#10-orbit-dashboard-dynamic-companion)
 11. [Dark Mode](#11-dark-mode-toggle)
 12. [Streak Tracking](#12-streak-tracking-system)
 13. [User Profile](#13-user-profile-screen)
@@ -147,10 +147,10 @@ The home dashboard is the primary screen users see after login. It displays toda
 │  │ 🔥 Avg Streak: 12 days         │   │
 │  └─────────────────────────────────┘   │
 │                                         │
-│     CAT MASCOT (Center)                │
+│     ORBIT DASHBOARD (Center)           │
 │  ┌─────────────────────────────────┐   │
-│  │         😸 Happy Cat!           │   │
-│  │       Happiness: ████░ 80%      │   │
+│  │         ✨ Orbit Score           │   │
+│  │       Momentum: ████░ 80%       │   │
 │  │   "Keep up the good work! ✨"   │   │
 │  └─────────────────────────────────┘   │
 │                                         │
@@ -1111,10 +1111,10 @@ GET /api/v1/analytics/habit/{habitId}?period=90
 
 ---
 
-## **10. CAT MASCOT (Dynamic Companion)**
+## **10. ORBIT DASHBOARD (Dynamic Companion)**
 
 ### 10.1 **Purpose**
-The cat mascot provides emotional feedback and motivation. Its mood changes based on overall habit completion rate, encouraging users to maintain consistency.
+The Orbit dashboard provides emotional feedback and motivation. Its score changes based on overall productivity, encouraging users to maintain consistency.
 
 ### 10.2 **Mood States**
 
@@ -1161,7 +1161,7 @@ Completion % → Mood & Emoji → Animation
 ```
 Completion Rate: 87%
 
-       🐱
+      ✨
       😸
     🐾 🐾
     ━━━━━━━━ ← Meter bar
@@ -1680,7 +1680,7 @@ Response: CSV file with:
 #### **Tab 1: 🏠 Home**
 - Dashboard with habit cards
 - Today's stats
-- Cat mascot
+- Orbit dashboard
 - Floating action button
 
 #### **Tab 2: 📅 Grid**
@@ -1999,4 +1999,4 @@ DELETE /api/v1/challenges/{id}     - Delete challenge
 
 ---
 
-**🎉 HABBIT TRACKER - Your Companion for Building Great Habits! 🐱✨**
+**Orbit - Your Command Center for Building Great Habits!**

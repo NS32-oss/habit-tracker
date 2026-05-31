@@ -1,13 +1,15 @@
 'use client'
 
 import { useState, useEffect, useCallback, useMemo, useRef } from 'react'
+import Image from 'next/image'
 import { motion } from 'framer-motion'
-import { CatMascot } from '@/components/cat-mascot'
+import { OrbitScoreCard } from '@/components/orbit-score-card'
 import { HabitCard } from '@/components/habit-card'
 import { DateSelector } from '@/components/date-selector'
 import { HabitDetail } from '@/components/habit-detail'
 import { HabitJournal } from '@/components/habit-journal'
-import { habitAPI, analyticsAPI, dayNotesAPI } from '@/lib/api'
+import { habitAPI, analyticsAPI, dayNotesAPI, taskAPI, expenseAPI } from '@/lib/api'
+import type { TabType } from '@/components/mobile-nav'
 import { RichTextEditor, htmlToPlainText, normalizeToHtml, sanitizeBasicHtml } from '@/components/ui/rich-text-editor'
 import dayjs from 'dayjs'
 import utc from 'dayjs/plugin/utc'
@@ -16,7 +18,11 @@ import { toast } from 'sonner'
 // Enable UTC plugin for consistent date handling
 dayjs.extend(utc)
 
-export function HomeScreen() {
+interface HomeScreenProps {
+  onNavigate?: (tab: TabType) => void
+}
+
+export function HomeScreen({ onNavigate }: HomeScreenProps) {
   const [selectedDate, setSelectedDate] = useState(() => {
     if (typeof window !== 'undefined') {
       const stored = localStorage.getItem('selectedDate')
@@ -30,7 +36,16 @@ export function HomeScreen() {
     return new Date()
   })
   const [habits, setHabits] = useState<any[]>([])
-  const [catMood, setCatMood] = useState({ completionRate: 0, totalHabits: 0, completedHabits: 0 })
+  const [orbitMetrics, setOrbitMetrics] = useState({
+    completionRate: 0,
+    totalHabits: 0,
+    completedHabits: 0,
+    productivityScore: 0,
+    weeklyMomentum: 0,
+    financeHealth: 0,
+    taskCompletion: 0,
+    overallProgress: 0,
+  })
   const [selectedHabit, setSelectedHabit] = useState<string | null>(null)
   const [journalHabitFromDetail, setJournalHabitFromDetail] = useState<any | null>(null)
   const [editHabit, setEditHabit] = useState<any | null>(null)
@@ -39,6 +54,8 @@ export function HomeScreen() {
   const [journalHabit, setJournalHabit] = useState<any | null>(null)
   const [loading, setLoading] = useState(true)
   const [stats, setStats] = useState<any>(null)
+  const [taskStats, setTaskStats] = useState<any>(null)
+  const [financeOverview, setFinanceOverview] = useState<any>(null)
   const [dayNote, setDayNote] = useState('')
   const [showDayNoteModal, setShowDayNoteModal] = useState(false)
   const emojiPool = ['💧','💻','🎸','💪','📚','🧘','🧠','🧹','🛌','🥗','🚴','🎮','📝','🧴','🏊','🍎']
@@ -54,19 +71,41 @@ export function HomeScreen() {
     abortControllerRef.current = new AbortController()
 
     try {
-      const [habitsData, statsData, notesData] = await Promise.all([
+      const [habitsData, statsData, notesData, taskStatsData, financeData] = await Promise.all([
         habitAPI.getAll(true, dateStr),
         analyticsAPI.getDashboardStats(),
-        dayNotesAPI.getRange(dateStr, dateStr)
+        dayNotesAPI.getRange(dateStr, dateStr),
+        taskAPI.getStats(),
+        expenseAPI.getOverview()
       ])
 
       const total = habitsData.length
       const completed = habitsData.filter((h: { isCompletedForDate: any }) => h.isCompletedForDate).length
       const rate = total > 0 ? Math.round((completed / total) * 100) : 0
+      const weeklyMomentum = statsData?.weeklyData?.length
+        ? Math.round(statsData.weeklyData.reduce((sum: number, day: any) => sum + (day.rate || 0), 0) / statsData.weeklyData.length)
+        : rate
+      const taskCompletion = taskStatsData?.completionRate ?? 0
+      const financeHealth = financeData?.budgetUsage?.percentage != null
+        ? Math.max(0, 100 - Math.round(financeData.budgetUsage.percentage))
+        : Math.max(0, Math.min(100, Math.round(financeData?.savingsRate ?? 0)))
+      const productivityScore = Math.max(0, Math.min(100, Math.round((rate * 0.45) + (taskCompletion * 0.35) + (financeHealth * 0.2))))
+      const overallProgress = Math.max(0, Math.min(100, Math.round((rate + taskCompletion + financeHealth) / 3)))
 
-      setCatMood({ completionRate: rate, totalHabits: total, completedHabits: completed })
+      setOrbitMetrics({
+        completionRate: rate,
+        totalHabits: total,
+        completedHabits: completed,
+        productivityScore,
+        weeklyMomentum,
+        financeHealth,
+        taskCompletion,
+        overallProgress,
+      })
       setHabits(habitsData)
       setStats(statsData)
+      setTaskStats(taskStatsData)
+      setFinanceOverview(financeData)
       
       const note = notesData.find((n) => n.date === dateStr)?.note || ''
       setDayNote(note)
@@ -97,14 +136,14 @@ export function HomeScreen() {
       h._id === habitId ? { ...h, isCompletedForDate: !h.isCompletedForDate } : h
     ))
 
-    // Update cat mood optimistically
+    // Update Orbit metrics optimistically
     const updatedHabits = habits.map(h => 
       h._id === habitId ? { ...h, isCompletedForDate: !h.isCompletedForDate } : h
     )
     const total = updatedHabits.length
     const completed = updatedHabits.filter(h => h.isCompletedForDate).length
     const rate = total > 0 ? Math.round((completed / total) * 100) : 0
-    setCatMood({ completionRate: rate, totalHabits: total, completedHabits: completed })
+    setOrbitMetrics(prev => ({ ...prev, completionRate: rate, totalHabits: total, completedHabits: completed }))
 
     try {
       await habitAPI.toggleLog(habitId, dateStr)
@@ -116,7 +155,7 @@ export function HomeScreen() {
       const revertTotal = habits.length
       const revertCompleted = habits.filter(h => h.isCompletedForDate).length
       const revertRate = revertTotal > 0 ? Math.round((revertCompleted / revertTotal) * 100) : 0
-      setCatMood({ completionRate: revertRate, totalHabits: revertTotal, completedHabits: revertCompleted })
+      setOrbitMetrics(prev => ({ ...prev, completionRate: revertRate, totalHabits: revertTotal, completedHabits: revertCompleted }))
       toast.error('Failed to update habit. Please try again.')
     }
   }
@@ -142,65 +181,103 @@ export function HomeScreen() {
     return (
       <div className="min-h-screen flex items-center justify-center">
         <div className="text-center">
-          <div className="text-6xl mb-4 animate-bounce">🐱</div>
-          <p className="text-gray-500">Loading your habits...</p>
+          <div className="mx-auto mb-4 h-16 w-16 overflow-hidden rounded-2xl shadow-lg">
+            <Image src="/logo.png" alt="Orbit logo" width={64} height={64} className="h-full w-full object-cover" />
+          </div>
+          <p className="text-gray-500">Loading your Orbit dashboard...</p>
         </div>
       </div>
     )
   }
 
   return (
-    <div className="min-h-screen bg-linear-to-br from-purple-50 via-pink-50 to-blue-50 dark:from-gray-900 dark:via-purple-900/10 dark:to-gray-900 p-4 pb-17">
-      <div className="max-w-7xl mx-auto space-y-6">
+    <div className="min-h-screen bg-linear-to-br from-purple-50 via-pink-50 to-blue-50 dark:from-gray-900 dark:via-purple-900/10 dark:to-gray-900 page-shell py-4 pb-17">
+      <div className="space-y-6">
         <motion.div
           initial={{ opacity: 0, y: -20 }}
           animate={{ opacity: 1, y: 0 }}
-          className="text-center pt-6"
+          className="pt-6"
         >
-          <h1 className="text-4xl font-bold text-gray-800 dark:text-white mb-2">
-            Purrfect Habits
-          </h1>
-          <p className="text-gray-600 dark:text-gray-400">
-            Track your daily habits with your cute cat companion
-          </p>
+          <div className="flex flex-col gap-4 lg:flex-row lg:items-center lg:justify-between">
+            <div className="flex items-center gap-4">
+              <div className="relative h-16 w-16 overflow-hidden rounded-2xl bg-white shadow-lg ring-1 ring-gray-200 dark:bg-gray-800 dark:ring-gray-700">
+                <Image src="/logo.png" alt="Orbit logo" fill className="object-cover" />
+              </div>
+              <div>
+                <p className="text-sm font-semibold uppercase tracking-[0.24em] text-purple-600 dark:text-purple-300">Orbit</p>
+                <h1 className="text-4xl font-bold text-gray-800 dark:text-white">Command center</h1>
+                <p className="text-gray-600 dark:text-gray-400">Track habits, tasks, and finance from one control surface.</p>
+              </div>
+            </div>
+            <div className="flex flex-wrap gap-3">
+              <button
+                onClick={() => onNavigate?.('todo')}
+                className="rounded-full bg-gray-900 px-4 py-2 text-sm font-semibold text-white shadow-lg transition hover:bg-gray-800 dark:bg-white dark:text-gray-900"
+              >
+                Open To-Do
+              </button>
+              <button
+                onClick={() => onNavigate?.('finance')}
+                className="rounded-full border border-purple-200 bg-white px-4 py-2 text-sm font-semibold text-purple-700 shadow-sm transition hover:bg-purple-50 dark:border-purple-800 dark:bg-gray-900 dark:text-purple-200 dark:hover:bg-purple-900/30"
+              >
+                Open Finance
+              </button>
+              <button
+                onClick={() => setShowDayNoteModal(true)}
+                className="rounded-full border border-gray-200 bg-white px-4 py-2 text-sm font-semibold text-gray-700 shadow-sm transition hover:bg-gray-50 dark:border-gray-700 dark:bg-gray-900 dark:text-gray-200 dark:hover:bg-gray-800"
+              >
+                Day journal
+              </button>
+            </div>
+          </div>
         </motion.div>
 
         <div className="flex justify-center sm:justify-start">
           <DateSelector selectedDate={selectedDate} onDateChange={setSelectedDate} />
         </div>
 
-        <div className="grid lg:grid-cols-3 gap-6">
-          <div className="lg:col-span-2 space-y-4">
+        <div className="dashboard-grid">
+          <div className="space-y-6">
+            <OrbitScoreCard
+              productivityScore={orbitMetrics.productivityScore}
+              weeklyMomentum={orbitMetrics.weeklyMomentum}
+              completionPercentage={orbitMetrics.completionRate}
+              overallProgress={orbitMetrics.overallProgress}
+            />
+
+            <div className="grid gap-4 md:grid-cols-3">
+              <MiniStatCard title="Habits Today" value={`${orbitMetrics.completionRate}%`} detail={`${orbitMetrics.completedHabits}/${orbitMetrics.totalHabits} complete`} accent="from-purple-500 to-fuchsia-500" />
+              <MiniStatCard title="Tasks" value={`${taskStats?.completionRate ?? 0}%`} detail={`${taskStats?.dueToday ?? 0} due today`} accent="from-blue-500 to-cyan-500" />
+              <MiniStatCard title="Finance" value={`${orbitMetrics.financeHealth}%`} detail={`${Math.round(financeOverview?.monthlySpending ?? 0)} monthly spend`} accent="from-amber-500 to-orange-500" />
+            </div>
+
             {stats && (
-              <div className="space-y-3">
-                <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
-                  <div className="text-sm font-semibold uppercase tracking-wide text-gray-500 dark:text-gray-400">Overview</div>
+              <div className="rounded-3xl bg-white/80 p-5 shadow-lg ring-1 ring-gray-200/80 backdrop-blur dark:bg-gray-900/80 dark:ring-gray-800">
+                <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+                  <div>
+                    <div className="text-sm font-semibold uppercase tracking-wide text-gray-500 dark:text-gray-400">Habit overview</div>
+                    <p className="text-sm text-gray-500 dark:text-gray-400">The current orbit of your daily system.</p>
+                  </div>
                   <button
                     onClick={() => setShowDayNoteModal(true)}
-                    className="self-start sm:self-auto px-3 py-2 rounded-lg border border-purple-200 dark:border-purple-800 bg-white dark:bg-gray-800 text-purple-700 dark:text-purple-200 text-sm font-semibold hover:bg-purple-50 dark:hover:bg-purple-900/30 transition"
+                    className="self-start rounded-full border border-purple-200 bg-white px-3 py-2 text-sm font-semibold text-purple-700 transition hover:bg-purple-50 dark:border-purple-800 dark:bg-gray-800 dark:text-purple-200 dark:hover:bg-purple-900/30"
                   >
-                    🗒️ Day journal
+                    Day journal
                   </button>
                 </div>
 
-                <div className="grid grid-cols-3 gap-4">
-                  <div className="bg-white dark:bg-gray-800 rounded-xl p-4 text-center">
-                    <p className="text-sm text-gray-600 dark:text-gray-400 mb-1">Today</p>
-                    <p className="text-3xl font-bold text-purple-600 dark:text-purple-400">
-                      {stats.todayCompletion?.rate || 0}%
-                    </p>
+                <div className="mt-4 grid grid-cols-3 gap-4">
+                  <div className="rounded-2xl bg-gray-50 p-4 text-center dark:bg-gray-800">
+                    <p className="mb-1 text-sm text-gray-600 dark:text-gray-400">Today</p>
+                    <p className="text-3xl font-bold text-purple-600 dark:text-purple-400">{stats.todayCompletion?.rate || 0}%</p>
                   </div>
-                  <div className="bg-white dark:bg-gray-800 rounded-xl p-4 text-center">
-                    <p className="text-sm text-gray-600 dark:text-gray-400 mb-1">Active</p>
-                    <p className="text-3xl font-bold text-blue-600 dark:text-blue-400">
-                      {stats.activeHabits || 0}
-                    </p>
+                  <div className="rounded-2xl bg-gray-50 p-4 text-center dark:bg-gray-800">
+                    <p className="mb-1 text-sm text-gray-600 dark:text-gray-400">Active</p>
+                    <p className="text-3xl font-bold text-blue-600 dark:text-blue-400">{stats.activeHabits || 0}</p>
                   </div>
-                  <div className="bg-white dark:bg-gray-800 rounded-xl p-4 text-center">
-                    <p className="text-sm text-gray-600 dark:text-gray-400 mb-1">Avg Streak</p>
-                    <p className="text-3xl font-bold text-amber-600 dark:text-amber-400">
-                      {stats.avgStreak || 0} 🔥
-                    </p>
+                  <div className="rounded-2xl bg-gray-50 p-4 text-center dark:bg-gray-800">
+                    <p className="mb-1 text-sm text-gray-600 dark:text-gray-400">Avg Streak</p>
+                    <p className="text-3xl font-bold text-amber-600 dark:text-amber-400">{stats.avgStreak || 0} 🔥</p>
                   </div>
                 </div>
               </div>
@@ -208,14 +285,10 @@ export function HomeScreen() {
 
             <div className="space-y-3">
               {habits.length === 0 ? (
-                <div className="bg-white dark:bg-gray-800 rounded-xl p-12 text-center">
-                  <div className="text-6xl mb-4">📝</div>
-                  <h3 className="text-xl font-semibold text-gray-800 dark:text-white mb-2">
-                    No habits yet
-                  </h3>
-                  <p className="text-gray-500 dark:text-gray-400">
-                    Create your first habit to get started!
-                  </p>
+                <div className="rounded-3xl bg-white/80 p-12 text-center shadow-lg ring-1 ring-gray-200/80 dark:bg-gray-900/80 dark:ring-gray-800">
+                  <div className="mx-auto mb-4 flex h-16 w-16 items-center justify-center rounded-2xl bg-purple-100 text-3xl dark:bg-purple-900/30">📝</div>
+                  <h3 className="text-xl font-semibold text-gray-800 dark:text-white mb-2">No habits yet</h3>
+                  <p className="text-gray-500 dark:text-gray-400">Create your first habit to start building momentum.</p>
                 </div>
               ) : (
                 habits.map((habit) => (
@@ -234,12 +307,51 @@ export function HomeScreen() {
             </div>
           </div>
 
-          <div>
-            <CatMascot
-              completionRate={catMood.completionRate}
-              totalHabits={catMood.totalHabits}
-              completedHabits={catMood.completedHabits}
-            />
+          <div className="space-y-4 xl:sticky xl:top-6 self-start">
+            <div className="rounded-3xl bg-white/80 p-5 shadow-lg ring-1 ring-gray-200/80 backdrop-blur dark:bg-gray-900/80 dark:ring-gray-800">
+              <p className="text-sm font-semibold uppercase tracking-[0.2em] text-gray-500 dark:text-gray-400">Quick actions</p>
+              <div className="mt-4 grid grid-cols-2 gap-3">
+                <ActionChip label="Open To-Do" onClick={() => onNavigate?.('todo')} />
+                <ActionChip label="Open Finance" onClick={() => onNavigate?.('finance')} />
+                <ActionChip label="Day journal" onClick={() => setShowDayNoteModal(true)} />
+                <ActionChip label="Refresh" onClick={loadData} />
+              </div>
+            </div>
+
+            <div className="rounded-3xl bg-white/80 p-5 shadow-lg ring-1 ring-gray-200/80 backdrop-blur dark:bg-gray-900/80 dark:ring-gray-800">
+              <div className="flex items-center justify-between gap-3">
+                <div>
+                  <p className="text-sm font-semibold uppercase tracking-[0.2em] text-gray-500 dark:text-gray-400">Task focus</p>
+                  <h3 className="mt-1 text-lg font-bold text-gray-800 dark:text-white">Today&apos;s workload</h3>
+                </div>
+                <span className="rounded-full bg-blue-100 px-3 py-1 text-xs font-semibold text-blue-700 dark:bg-blue-900/30 dark:text-blue-200">
+                  {taskStats?.activeTasks ?? 0} active
+                </span>
+              </div>
+              <div className="mt-4 grid grid-cols-2 gap-3 text-sm">
+                <InfoPill label="Due today" value={taskStats?.dueToday ?? 0} />
+                <InfoPill label="Overdue" value={taskStats?.overdueTasks ?? 0} />
+                <InfoPill label="High priority" value={taskStats?.highPriorityTasks ?? 0} />
+                <InfoPill label="Completed" value={taskStats?.completedTasks ?? 0} />
+              </div>
+            </div>
+
+            <div className="rounded-3xl bg-white/80 p-5 shadow-lg ring-1 ring-gray-200/80 backdrop-blur dark:bg-gray-900/80 dark:ring-gray-800">
+              <div className="flex items-center justify-between gap-3">
+                <div>
+                  <p className="text-sm font-semibold uppercase tracking-[0.2em] text-gray-500 dark:text-gray-400">Finance pulse</p>
+                  <h3 className="mt-1 text-lg font-bold text-gray-800 dark:text-white">Recent activity</h3>
+                </div>
+                <span className="rounded-full bg-amber-100 px-3 py-1 text-xs font-semibold text-amber-700 dark:bg-amber-900/30 dark:text-amber-200">
+                  {orbitMetrics.financeHealth}% healthy
+                </span>
+              </div>
+              <div className="mt-4 space-y-3">
+                <InfoPill label="Monthly spend" value={Math.round(financeOverview?.monthlySpending ?? 0)} />
+                <InfoPill label="Remaining budget" value={Math.round(financeOverview?.remainingBudget ?? 0)} />
+                <InfoPill label="Recent transactions" value={financeOverview?.recentTransactions?.length ?? 0} />
+              </div>
+            </div>
           </div>
         </div>
       </div>
@@ -432,6 +544,37 @@ export function HomeScreen() {
           onClose={() => setJournalHabitFromDetail(null)}
         />
       )}
+    </div>
+  )
+}
+
+function MiniStatCard({ title, value, detail, accent }: { title: string; value: string; detail: string; accent: string }) {
+  return (
+    <div className="rounded-3xl bg-white/80 p-4 shadow-lg ring-1 ring-gray-200/80 backdrop-blur dark:bg-gray-900/80 dark:ring-gray-800">
+      <div className={`h-1.5 w-16 rounded-full bg-linear-to-r ${accent}`} />
+      <p className="mt-4 text-sm font-semibold uppercase tracking-[0.18em] text-gray-500 dark:text-gray-400">{title}</p>
+      <p className="mt-2 text-3xl font-black text-gray-800 dark:text-white">{value}</p>
+      <p className="mt-1 text-sm text-gray-500 dark:text-gray-400">{detail}</p>
+    </div>
+  )
+}
+
+function ActionChip({ label, onClick }: { label: string; onClick: () => void }) {
+  return (
+    <button
+      onClick={onClick}
+      className="rounded-2xl border border-gray-200 bg-gray-50 px-4 py-3 text-sm font-semibold text-gray-700 transition hover:border-purple-200 hover:bg-purple-50 hover:text-purple-700 dark:border-gray-700 dark:bg-gray-800 dark:text-gray-200 dark:hover:border-purple-700 dark:hover:bg-purple-900/30 dark:hover:text-purple-200"
+    >
+      {label}
+    </button>
+  )
+}
+
+function InfoPill({ label, value }: { label: string; value: number | string }) {
+  return (
+    <div className="rounded-2xl bg-gray-50 p-3 ring-1 ring-gray-200 dark:bg-gray-800 dark:ring-gray-700">
+      <p className="text-[11px] uppercase tracking-[0.18em] text-gray-500 dark:text-gray-400">{label}</p>
+      <p className="mt-1 text-lg font-black text-gray-800 dark:text-white">{value}</p>
     </div>
   )
 }

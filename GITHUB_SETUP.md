@@ -14,7 +14,7 @@ This guide will help you push the HabbitTracker project to GitHub.
 1. Go to **https://github.com/new**
 2. Fill in the repository details:
    - **Repository name**: `HabbitTracker` (or your preferred name)
-   - **Description**: "🐱 A full-stack habit tracking app with a cute cat companion"
+   - **Description**: "Orbit is a full-stack productivity app for habits, tasks, and finance"
    - **Visibility**: Choose "Public" or "Private"
    - **Initialize**: Leave unchecked (we already have code)
    - **License**: MIT (optional but recommended)

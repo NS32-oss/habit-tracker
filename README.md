@@ -1,14 +1,14 @@
-# 🐱 HabbitTracker - Purrfect Habit Tracking
+# Orbit
 
-A full-stack habit tracking application with a cute cat mascot companion. Build better habits while your digital cat keeps you motivated!
+A full-stack productivity application for habits, tasks, and finance. Orbit keeps your workflows organized with a premium dashboard experience.
 
 ## 🎯 Features
 
 - **Habit Management** - Create, track, and manage daily habits with customizable schedules
 - **Smart Streaks** - Automatic streak calculation that skips non-scheduled days
 - **Challenges** - Create time-based challenges with progress tracking
-- **Analytics** - Comprehensive analytics with completion rates and mood tracking
-- **Cat Companion** - Interactive cat mascot that changes mood based on your progress
+- **Analytics** - Comprehensive analytics with completion rates and momentum tracking
+- **Orbit Dashboard** - Dynamic productivity scorecard and command center
 - **Dark Mode** - Beautiful dark theme support
 - **Responsive Design** - Works seamlessly on mobile and desktop
 
@@ -49,8 +49,8 @@ All endpoints use `/api/v1/` prefix for future versioning support.
 - `GET /api/v1/analytics/habit/:id` - Habit analytics with period validation
 - `GET /api/v1/challenges` - Get challenges
 - `POST /api/v1/challenges` - Create challenge
-- `GET /api/v1/cat/mood` - Get cat mood (active habits only)
-- `GET /api/v1/cat/stats` - Get cat statistics
+- `GET /api/v1/analytics/summary` - Get dashboard summary stats
+- `GET /api/v1/analytics/today` - Get today's stats
 
 ### Data Models
 
