@@ -31,18 +31,18 @@ export function ExpenseDashboard({ overview, categoryBreakdown, trendData }: Exp
 
   return (
     <div className="space-y-6">
-      <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-3">
+      <div className="grid gap-3 sm:grid-cols-2 xl:grid-cols-3">
         {statCards.map((card, index) => (
           <motion.div
             key={card.label}
             initial={{ opacity: 0, y: 16 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: index * 0.05 }}
-            className={`rounded-2xl p-5 text-white shadow-lg ${toneClasses[card.tone]}`}
+            className={`rounded-2xl p-4 text-white shadow-lg sm:p-5 ${toneClasses[card.tone]}`}
           >
             <p className="text-sm/6 text-white/80">{card.label}</p>
             <div className="mt-2 flex items-end gap-2">
-              <span className="text-3xl font-black tracking-tight">
+              <span className="text-2xl font-black tracking-tight sm:text-3xl">
                 {card.prefix ?? ''}
                 {typeof card.value === 'number' && card.label !== 'Financial Score'
                   ? card.value.toLocaleString(undefined, { maximumFractionDigits: 2 })
@@ -54,11 +54,11 @@ export function ExpenseDashboard({ overview, categoryBreakdown, trendData }: Exp
         ))}
       </div>
 
-      <div className="grid gap-6 xl:grid-cols-[1.1fr_0.9fr]">
+      <div className="grid gap-4 xl:grid-cols-[1.1fr_0.9fr]">
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
-          className="rounded-2xl bg-white p-5 shadow-sm ring-1 ring-gray-200 dark:bg-gray-800 dark:ring-gray-700"
+          className="rounded-2xl bg-white p-4 shadow-sm ring-1 ring-gray-200 dark:bg-gray-800 dark:ring-gray-700 sm:p-5"
         >
           <div className="mb-4 flex items-center justify-between">
             <div>
@@ -69,7 +69,7 @@ export function ExpenseDashboard({ overview, categoryBreakdown, trendData }: Exp
               {overview?.monthlySpending ?? 0} spent this month
             </div>
           </div>
-          <div style={{ height: 280 }}>
+          <div className="h-[240px] sm:h-[280px]">
             <ResponsiveContainer width="100%" height="100%">
               <PieChart>
                 <Pie data={categoryBreakdown} dataKey="total" nameKey="category" innerRadius={70} outerRadius={105} paddingAngle={4}>
@@ -87,13 +87,13 @@ export function ExpenseDashboard({ overview, categoryBreakdown, trendData }: Exp
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.05 }}
-          className="rounded-2xl bg-white p-5 shadow-sm ring-1 ring-gray-200 dark:bg-gray-800 dark:ring-gray-700"
+          className="rounded-2xl bg-white p-4 shadow-sm ring-1 ring-gray-200 dark:bg-gray-800 dark:ring-gray-700 sm:p-5"
         >
           <div className="mb-4">
             <h3 className="text-lg font-bold text-gray-800 dark:text-white">Cash Flow Trend</h3>
             <p className="text-sm text-gray-500 dark:text-gray-400">Income vs expense over recent days</p>
           </div>
-          <div style={{ height: 280 }}>
+          <div className="h-[240px] sm:h-[280px]">
             <ResponsiveContainer width="100%" height="100%">
               <LineChart data={trendData}>
                 <CartesianGrid strokeDasharray="3 3" opacity={0.2} />
@@ -108,7 +108,7 @@ export function ExpenseDashboard({ overview, categoryBreakdown, trendData }: Exp
         </motion.div>
       </div>
 
-      <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-4">
+      <div className="grid gap-3 sm:grid-cols-2 xl:grid-cols-4">
         <MiniMetric label="Monthly Spending" value={overview?.monthlySpending ?? 0} tone="rose" />
         <MiniMetric label="Weekly Spending" value={overview?.weeklySpending ?? 0} tone="orange" />
         <MiniMetric label="Daily Spending" value={overview?.dailySpending ?? 0} tone="amber" />
@@ -145,7 +145,7 @@ function MiniMetric({ label, value, tone, suffix = '$' }: { label: string; value
   }
 
   return (
-    <div className="rounded-2xl bg-white p-4 shadow-sm ring-1 ring-gray-200 dark:bg-gray-800 dark:ring-gray-700">
+    <div className="rounded-2xl bg-white p-3 shadow-sm ring-1 ring-gray-200 dark:bg-gray-800 dark:ring-gray-700 sm:p-4">
       <p className="text-sm text-gray-500 dark:text-gray-400">{label}</p>
       <div className={`mt-2 inline-flex rounded-full px-3 py-1 text-sm font-bold text-white ${toneClasses[tone]}`}>
         {suffix === '%' ? `${value}%` : `${suffix}${value.toLocaleString(undefined, { maximumFractionDigits: 2 })}`}
@@ -156,7 +156,7 @@ function MiniMetric({ label, value, tone, suffix = '$' }: { label: string; value
 
 function InsightCard({ title, value, description }: { title: string; value: string; description: string }) {
   return (
-    <div className="rounded-2xl bg-white p-5 shadow-sm ring-1 ring-gray-200 dark:bg-gray-800 dark:ring-gray-700">
+    <div className="rounded-2xl bg-white p-4 shadow-sm ring-1 ring-gray-200 dark:bg-gray-800 dark:ring-gray-700 sm:p-5">
       <p className="text-sm font-medium text-gray-500 dark:text-gray-400">{title}</p>
       <p className="mt-2 text-2xl font-black text-gray-800 dark:text-white">{value}</p>
       <p className="mt-2 text-sm text-gray-600 dark:text-gray-400">{description}</p>

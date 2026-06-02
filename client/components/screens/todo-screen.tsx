@@ -189,8 +189,8 @@ export function ToDoScreen() {
   const isEmpty = tasks.length === 0
 
   return (
-    <div className="min-h-screen bg-linear-to-br from-purple-50 via-pink-50 to-blue-50 dark:from-gray-900 dark:via-purple-900/10 dark:to-gray-900 page-shell py-4 pb-24">
-      <div className="space-y-6">
+    <div className="min-h-screen bg-linear-to-br from-purple-50 via-pink-50 to-blue-50 dark:from-gray-900 dark:via-purple-900/10 dark:to-gray-900 page-shell py-3 pb-28 sm:py-4 sm:pb-24">
+      <div className="space-y-4 sm:space-y-6">
         {/* Header */}
         <motion.div
           initial={{ opacity: 0, y: -20 }}
@@ -199,11 +199,11 @@ export function ToDoScreen() {
           className="space-y-4"
         >
           <div>
-            <h1 className="text-4xl font-bold text-gray-800 dark:text-white mb-2">✅ To-Do</h1>
-            <p className="text-gray-600 dark:text-gray-400">Stay organized and boost your productivity</p>
+            <h1 className="mb-1 text-2xl font-bold text-gray-800 dark:text-white sm:mb-2 sm:text-4xl">✅ To-Do</h1>
+            <p className="text-sm text-gray-600 dark:text-gray-400 sm:text-base">Stay organized and boost your productivity</p>
           </div>
 
-          <div className="flex flex-wrap gap-2 rounded-2xl bg-white/80 p-2 shadow-sm ring-1 ring-gray-200/80 backdrop-blur dark:bg-gray-900/80 dark:ring-gray-800">
+          <div className="flex gap-2 overflow-x-auto rounded-2xl bg-white/80 p-2 shadow-sm ring-1 ring-gray-200/80 backdrop-blur [scrollbar-width:none] [-ms-overflow-style:none] dark:bg-gray-900/80 dark:ring-gray-800 [&::-webkit-scrollbar]:hidden">
             {[
               ['overview', 'Overview'],
               ['active', 'Active'],
@@ -214,7 +214,7 @@ export function ToDoScreen() {
               <button
                 key={key}
                 onClick={() => setActiveSection(key as typeof activeSection)}
-                className={`rounded-xl px-4 py-2 text-sm font-semibold transition ${activeSection === key ? 'bg-purple-600 text-white shadow-lg' : 'text-gray-600 hover:bg-gray-100 dark:text-gray-300 dark:hover:bg-gray-800'}`}
+                className={`whitespace-nowrap rounded-xl px-3 py-2 text-xs font-semibold transition sm:px-4 sm:text-sm ${activeSection === key ? 'bg-purple-600 text-white shadow-lg' : 'text-gray-600 hover:bg-gray-100 dark:text-gray-300 dark:hover:bg-gray-800'}`}
               >
                 {label}
               </button>
@@ -237,13 +237,13 @@ export function ToDoScreen() {
               placeholder="Search tasks..."
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
-              className="flex-1 px-4 py-2 rounded-lg border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 text-gray-800 dark:text-white placeholder-gray-500 dark:placeholder-gray-400"
+              className="flex-1 rounded-lg border border-gray-200 bg-white px-3 py-2 text-sm text-gray-800 placeholder-gray-500 dark:border-gray-700 dark:bg-gray-800 dark:text-white dark:placeholder-gray-400 sm:px-4 sm:py-2.5"
             />
             <motion.button
               onClick={() => setShowModal(true)}
               whileHover={{ scale: 1.05 }}
               whileTap={{ scale: 0.95 }}
-              className="px-4 py-2 bg-purple-600 hover:bg-purple-700 text-white rounded-lg font-medium transition-colors"
+              className="rounded-lg bg-purple-600 px-3 py-2 text-sm font-medium text-white transition-colors hover:bg-purple-700 sm:px-4"
             >
               + Add Task
             </motion.button>

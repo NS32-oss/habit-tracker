@@ -31,14 +31,14 @@ export function DateSelector({ selectedDate, onDateChange }: DateSelectorProps) 
   const isFuture = dayjs(selectedDate).isAfter(dayjs(), 'day')
 
   return (
-    <div className="w-full bg-white dark:bg-gray-800 rounded-xl p-4 shadow-sm">
-      <div className="flex items-center justify-between gap-4 w-full">
+    <div className="w-full rounded-2xl bg-white p-3 shadow-sm dark:bg-gray-800 sm:p-4">
+      <div className="flex w-full items-center justify-between gap-2 sm:gap-4">
         <button
           onClick={goToPrevious}
-          className="p-2 rounded-lg bg-gray-100 dark:bg-gray-700 hover:bg-gray-200 dark:hover:bg-gray-600 transition-colors"
+          className="rounded-xl bg-gray-100 p-2 text-sm transition-colors hover:bg-gray-200 dark:bg-gray-700 dark:hover:bg-gray-600"
         >
           <svg
-            className="w-5 h-5 text-gray-700 dark:text-gray-300"
+            className="h-4 w-4 text-gray-700 dark:text-gray-300 sm:h-5 sm:w-5"
             fill="none"
             stroke="currentColor"
             viewBox="0 0 24 24"
@@ -50,11 +50,11 @@ export function DateSelector({ selectedDate, onDateChange }: DateSelectorProps) 
         <div className="flex-1 text-center">
           <button
             onClick={() => setShowCalendar(!showCalendar)}
-            className="font-semibold text-lg text-gray-800 dark:text-white"
+            className="text-base font-semibold text-gray-800 dark:text-white sm:text-lg"
           >
             {isToday ? 'Today' : dayjs(selectedDate).format('MMM D, YYYY')}
           </button>
-          <p className="text-sm text-gray-500 dark:text-gray-400">
+          <p className="text-xs text-gray-500 dark:text-gray-400 sm:text-sm">
             {dayjs(selectedDate).format('dddd')}
           </p>
         </div>
@@ -62,10 +62,10 @@ export function DateSelector({ selectedDate, onDateChange }: DateSelectorProps) 
         <button
           onClick={goToNext}
           disabled={isFuture}
-          className="p-2 rounded-lg bg-gray-100 dark:bg-gray-700 hover:bg-gray-200 dark:hover:bg-gray-600 transition-colors disabled:opacity-30 disabled:cursor-not-allowed"
+          className="rounded-xl bg-gray-100 p-2 text-sm transition-colors hover:bg-gray-200 dark:bg-gray-700 dark:hover:bg-gray-600 disabled:cursor-not-allowed disabled:opacity-30"
         >
           <svg
-            className="w-5 h-5 text-gray-700 dark:text-gray-300"
+            className="h-4 w-4 text-gray-700 dark:text-gray-300 sm:h-5 sm:w-5"
             fill="none"
             stroke="currentColor"
             viewBox="0 0 24 24"
@@ -80,7 +80,7 @@ export function DateSelector({ selectedDate, onDateChange }: DateSelectorProps) 
           initial={{ opacity: 0, y: -10 }}
           animate={{ opacity: 1, y: 0 }}
           onClick={goToToday}
-          className="mt-3 w-full py-2 bg-purple-100 dark:bg-purple-900/30 text-purple-600 dark:text-purple-400 rounded-lg text-sm font-medium hover:bg-purple-200 dark:hover:bg-purple-900/50 transition-colors"
+          className="mt-3 w-full rounded-xl bg-purple-100 py-2 text-sm font-medium text-purple-600 transition-colors hover:bg-purple-200 dark:bg-purple-900/30 dark:text-purple-400 dark:hover:bg-purple-900/50"
         >
           Jump to Today
         </motion.button>

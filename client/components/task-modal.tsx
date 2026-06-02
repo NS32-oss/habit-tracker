@@ -117,30 +117,30 @@ export function TaskModal({ task, onSave, onClose, categories }: TaskModalProps)
       animate={{ opacity: 1 }}
       exit={{ opacity: 0 }}
       onClick={onClose}
-      className="fixed inset-0 bg-black/40 dark:bg-black/60 z-50 flex items-center justify-center p-4"
+      className="fixed inset-0 z-50 flex items-end justify-center bg-black/40 p-3 dark:bg-black/60 sm:items-center sm:p-4"
     >
       <motion.div
         initial={{ scale: 0.9, y: 20 }}
         animate={{ scale: 1, y: 0 }}
         exit={{ scale: 0.9, y: 20 }}
         onClick={(e) => e.stopPropagation()}
-        className="bg-white dark:bg-gray-800 rounded-2xl shadow-xl max-w-2xl w-full max-h-[90vh] overflow-y-auto"
+        className="max-h-[88vh] w-full max-w-2xl overflow-y-auto rounded-t-[1.75rem] bg-white shadow-xl dark:bg-gray-800 sm:max-h-[90vh] sm:rounded-2xl"
       >
         {/* Header */}
-        <div className="sticky top-0 flex items-center justify-between p-6 border-b border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800">
-          <h2 className="text-2xl font-bold text-gray-800 dark:text-white">
+        <div className="sticky top-0 flex items-center justify-between border-b border-gray-200 bg-white p-4 dark:border-gray-700 dark:bg-gray-800 sm:p-6">
+          <h2 className="text-xl font-bold text-gray-800 dark:text-white sm:text-2xl">
             {task ? '✏️ Edit Task' : '✨ New Task'}
           </h2>
           <button
             onClick={onClose}
-            className="w-10 h-10 rounded-full hover:bg-gray-100 dark:hover:bg-gray-700 flex items-center justify-center text-xl"
+            className="flex h-9 w-9 items-center justify-center rounded-full text-lg hover:bg-gray-100 dark:hover:bg-gray-700 sm:h-10 sm:w-10 sm:text-xl"
           >
             ✕
           </button>
         </div>
 
         {/* Form */}
-        <form onSubmit={handleSubmit} className="p-6 space-y-6">
+        <form onSubmit={handleSubmit} className="space-y-5 p-4 sm:space-y-6 sm:p-6">
           {/* Title */}
           <div>
             <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">

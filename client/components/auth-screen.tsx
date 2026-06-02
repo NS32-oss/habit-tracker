@@ -42,13 +42,13 @@ export function AuthScreen({ onSuccess }: AuthScreenProps) {
   };
 
   return (
-    <div className="min-h-screen bg-linear-to-br from-purple-100 via-pink-50 to-blue-100 dark:from-gray-900 dark:via-purple-900/20 dark:to-gray-900 flex items-center justify-center p-4">
+    <div className="min-h-screen bg-linear-to-br from-purple-100 via-pink-50 to-blue-100 dark:from-gray-900 dark:via-purple-900/20 dark:to-gray-900 flex items-center justify-center p-3 sm:p-4">
       <motion.div
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
-        className="w-full max-w-md"
+        className="w-full max-w-sm sm:max-w-md"
       >
-        <div className="text-center mb-8">
+        <div className="mb-6 text-center sm:mb-8">
           <motion.div
             className="mb-4 flex justify-center"
             animate={{ y: [0, -6, 0] }}
@@ -60,10 +60,10 @@ export function AuthScreen({ onSuccess }: AuthScreenProps) {
               width={96}
               height={96}
               unoptimized
-              className="h-24 w-24 rounded-3xl shadow-xl"
+              className="h-20 w-20 rounded-3xl shadow-xl sm:h-24 sm:w-24"
             />
           </motion.div>
-          <h1 className="text-4xl font-bold text-gray-800 dark:text-white mb-2">
+          <h1 className="mb-2 text-3xl font-bold text-gray-800 dark:text-white sm:text-4xl">
             Orbit
           </h1>
           <p className="text-gray-600 dark:text-gray-400">
@@ -71,11 +71,11 @@ export function AuthScreen({ onSuccess }: AuthScreenProps) {
           </p>
         </div>
 
-        <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-xl p-8">
-          <div className="flex gap-2 mb-6">
+        <div className="rounded-2xl bg-white p-5 shadow-xl dark:bg-gray-800 sm:p-8">
+          <div className="mb-6 flex gap-2">
             <button
               onClick={() => setIsLogin(true)}
-              className={`flex-1 py-2 rounded-lg font-medium transition-all ${
+              className={`flex-1 rounded-lg py-2 text-sm font-medium transition-all ${
                 isLogin
                   ? "bg-purple-500 text-white"
                   : "bg-gray-100 dark:bg-gray-700 text-gray-600 dark:text-gray-400"
@@ -85,7 +85,7 @@ export function AuthScreen({ onSuccess }: AuthScreenProps) {
             </button>
             <button
               onClick={() => setIsLogin(false)}
-              className={`flex-1 py-2 rounded-lg font-medium transition-all ${
+              className={`flex-1 rounded-lg py-2 text-sm font-medium transition-all ${
                 !isLogin
                   ? "bg-purple-500 text-white"
                   : "bg-gray-100 dark:bg-gray-700 text-gray-600 dark:text-gray-400"

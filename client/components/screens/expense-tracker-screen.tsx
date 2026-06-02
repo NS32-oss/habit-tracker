@@ -261,28 +261,28 @@ export function ExpenseTrackerScreen() {
   }
 
   return (
-    <div className="min-h-screen bg-linear-to-br from-purple-50 via-pink-50 to-blue-50 p-4 pb-24 dark:from-gray-900 dark:via-purple-900/10 dark:to-gray-900">
-      <div className="space-y-6 page-shell py-4">
+    <div className="min-h-screen bg-linear-to-br from-purple-50 via-pink-50 to-blue-50 p-3 pb-28 dark:from-gray-900 dark:via-purple-900/10 dark:to-gray-900 sm:p-4 sm:pb-24">
+      <div className="page-shell space-y-4 py-3 sm:space-y-6 sm:py-4">
         <motion.div initial={{ opacity: 0, y: -16 }} animate={{ opacity: 1, y: 0 }} className="space-y-4">
-          <div className="flex flex-col gap-4 lg:flex-row lg:items-end lg:justify-between">
+          <div className="flex flex-col gap-3 lg:flex-row lg:items-end lg:justify-between">
             <div>
-              <h1 className="text-4xl font-black tracking-tight text-gray-800 dark:text-white">Finance</h1>
-              <p className="mt-2 text-gray-600 dark:text-gray-400">Track cashflow, budgets, savings goals, recurring spending, and analytics in one workspace.</p>
+              <h1 className="text-2xl font-black tracking-tight text-gray-800 dark:text-white sm:text-4xl">Finance</h1>
+              <p className="mt-2 max-w-2xl text-sm text-gray-600 dark:text-gray-400 sm:text-base">Track cashflow, budgets, savings goals, recurring spending, and analytics in one workspace.</p>
             </div>
-            <div className="flex flex-wrap gap-2">
-              <button onClick={() => openModal('transaction')} className="rounded-xl bg-linear-to-r from-purple-600 to-pink-600 px-4 py-3 text-sm font-semibold text-white shadow-lg">
+            <div className="grid grid-cols-2 gap-2 sm:flex sm:flex-wrap">
+              <button onClick={() => openModal('transaction')} className="rounded-xl bg-linear-to-r from-purple-600 to-pink-600 px-3 py-2.5 text-sm font-semibold text-white shadow-lg sm:px-4 sm:py-3">
                 + Transaction
               </button>
-              <button onClick={() => openModal('budget')} className="rounded-xl bg-white px-4 py-3 text-sm font-semibold text-gray-700 shadow-sm ring-1 ring-gray-200 dark:bg-gray-800 dark:text-gray-200 dark:ring-gray-700">
+              <button onClick={() => openModal('budget')} className="rounded-xl bg-white px-3 py-2.5 text-sm font-semibold text-gray-700 shadow-sm ring-1 ring-gray-200 dark:bg-gray-800 dark:text-gray-200 dark:ring-gray-700 sm:px-4 sm:py-3">
                 + Budget
               </button>
-              <button onClick={() => openModal('goal')} className="rounded-xl bg-white px-4 py-3 text-sm font-semibold text-gray-700 shadow-sm ring-1 ring-gray-200 dark:bg-gray-800 dark:text-gray-200 dark:ring-gray-700">
+              <button onClick={() => openModal('goal')} className="rounded-xl bg-white px-3 py-2.5 text-sm font-semibold text-gray-700 shadow-sm ring-1 ring-gray-200 dark:bg-gray-800 dark:text-gray-200 dark:ring-gray-700 sm:px-4 sm:py-3">
                 + Goal
               </button>
-              <button onClick={() => handleExport('csv')} className="rounded-xl bg-white px-4 py-3 text-sm font-semibold text-gray-700 shadow-sm ring-1 ring-gray-200 dark:bg-gray-800 dark:text-gray-200 dark:ring-gray-700">
+              <button onClick={() => handleExport('csv')} className="rounded-xl bg-white px-3 py-2.5 text-sm font-semibold text-gray-700 shadow-sm ring-1 ring-gray-200 dark:bg-gray-800 dark:text-gray-200 dark:ring-gray-700 sm:px-4 sm:py-3">
                 Export CSV
               </button>
-              <button onClick={() => handleExport('json')} className="rounded-xl bg-white px-4 py-3 text-sm font-semibold text-gray-700 shadow-sm ring-1 ring-gray-200 dark:bg-gray-800 dark:text-gray-200 dark:ring-gray-700">
+              <button onClick={() => handleExport('json')} className="rounded-xl bg-white px-3 py-2.5 text-sm font-semibold text-gray-700 shadow-sm ring-1 ring-gray-200 dark:bg-gray-800 dark:text-gray-200 dark:ring-gray-700 sm:px-4 sm:py-3">
                 Backup JSON
               </button>
             </div>
@@ -290,12 +290,12 @@ export function ExpenseTrackerScreen() {
 
         </motion.div>
 
-        <div className="flex flex-wrap gap-2">
+        <div className="flex gap-2 overflow-x-auto pb-1 [scrollbar-width:none] [-ms-overflow-style:none] [&::-webkit-scrollbar]:hidden">
           {(['home', 'transactions', 'budgets', 'goals', 'subscriptions', 'analytics'] as ViewSection[]).map((item) => (
             <button
               key={item}
               onClick={() => setSection(item)}
-              className={`rounded-full px-4 py-2 text-sm font-medium transition-all ${
+              className={`whitespace-nowrap rounded-full px-3 py-2 text-xs font-medium transition-all sm:px-4 sm:text-sm ${
                 section === item
                   ? 'bg-purple-600 text-white shadow-md'
                   : 'bg-white text-gray-700 shadow-sm ring-1 ring-gray-200 hover:bg-gray-50 dark:bg-gray-800 dark:text-gray-300 dark:ring-gray-700 dark:hover:bg-gray-700'

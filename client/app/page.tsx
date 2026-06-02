@@ -114,7 +114,7 @@ export default function HabitTracker() {
 
   return (
     <main className="min-h-screen bg-background relative selection:bg-primary/20">
-      <div className="page-shell min-h-screen pb-20 lg:pb-8 relative">
+      <div className="page-shell relative min-h-screen pb-24 sm:pb-28 lg:pb-8">
         <AnimatePresence mode="wait">
           {activeTab === "home" && (
             <motion.div
@@ -217,7 +217,7 @@ export default function HabitTracker() {
         {activeTab === "home" && (
           <motion.button
             onClick={() => setIsAddOpen(true)}
-            className="fixed bottom-24 right-6 w-14 h-14 bg-linear-to-br from-purple-400 to-pink-400 rounded-full shadow-lg flex items-center justify-center text-white text-2xl z-40 hover:scale-110 transition-transform"
+            className="fixed bottom-28 right-4 z-40 flex h-12 w-12 items-center justify-center rounded-full bg-linear-to-br from-purple-400 to-pink-400 text-xl text-white shadow-lg transition-transform hover:scale-110 sm:bottom-24 sm:right-6 sm:h-14 sm:w-14 sm:text-2xl"
             whileHover={{ scale: 1.1 }}
             whileTap={{ scale: 0.95 }}
             initial={{ scale: 0 }}

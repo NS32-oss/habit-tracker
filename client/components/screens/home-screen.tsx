@@ -191,16 +191,16 @@ export function HomeScreen({ onNavigate }: HomeScreenProps) {
   }
 
   return (
-    <div className="min-h-screen bg-linear-to-br from-purple-50 via-pink-50 to-blue-50 dark:from-gray-900 dark:via-purple-900/10 dark:to-gray-900 page-shell py-4 pb-17">
-      <div className="space-y-6">
+    <div className="min-h-screen bg-linear-to-br from-purple-50 via-pink-50 to-blue-50 dark:from-gray-900 dark:via-purple-900/10 dark:to-gray-900 page-shell py-3 pb-20 sm:py-4 sm:pb-17">
+      <div className="space-y-4 sm:space-y-6">
         <motion.div
           initial={{ opacity: 0, y: -20 }}
           animate={{ opacity: 1, y: 0 }}
-          className="pt-6"
+          className="pt-3 sm:pt-6"
         >
-          <div className="flex flex-col gap-4 lg:flex-row lg:items-center lg:justify-between">
-            <div className="flex items-center gap-4">
-              <div className="relative h-16 w-16 overflow-hidden rounded-2xl bg-white shadow-lg ring-1 ring-gray-200 dark:bg-gray-800 dark:ring-gray-700">
+          <div className="flex flex-col gap-3 lg:flex-row lg:items-center lg:justify-between">
+            <div className="flex items-center gap-3 sm:gap-4">
+              <div className="relative h-12 w-12 overflow-hidden rounded-2xl bg-white shadow-lg ring-1 ring-gray-200 dark:bg-gray-800 dark:ring-gray-700 sm:h-16 sm:w-16">
                 <Image
   src="/logo.png"
   alt="Orbit logo"
@@ -210,27 +210,27 @@ export function HomeScreen({ onNavigate }: HomeScreenProps) {
 />
               </div>
               <div>
-                <p className="text-sm font-semibold uppercase tracking-[0.24em] text-purple-600 dark:text-purple-300">Orbit</p>
-                <h1 className="text-4xl font-bold text-gray-800 dark:text-white">Command center</h1>
-                <p className="text-gray-600 dark:text-gray-400">Track habits, tasks, and finance from one control surface.</p>
+                <p className="text-[10px] font-semibold uppercase tracking-[0.22em] text-purple-600 dark:text-purple-300 sm:text-sm sm:tracking-[0.24em]">Orbit</p>
+                <h1 className="text-2xl font-bold text-gray-800 dark:text-white sm:text-4xl">Command center</h1>
+                <p className="max-w-xl text-sm text-gray-600 dark:text-gray-400 sm:text-base">Track habits, tasks, and finance from one control surface.</p>
               </div>
             </div>
-            <div className="flex flex-wrap gap-3">
+            <div className="grid grid-cols-1 gap-2 sm:flex sm:flex-wrap sm:gap-3">
               <button
                 onClick={() => onNavigate?.('todo')}
-                className="rounded-full bg-gray-900 px-4 py-2 text-sm font-semibold text-white shadow-lg transition hover:bg-gray-800 dark:bg-white dark:text-gray-900"
+                className="rounded-full bg-gray-900 px-3 py-2 text-sm font-semibold text-white shadow-lg transition hover:bg-gray-800 dark:bg-white dark:text-gray-900 sm:px-4"
               >
                 Open To-Do
               </button>
               <button
                 onClick={() => onNavigate?.('finance')}
-                className="rounded-full border border-purple-200 bg-white px-4 py-2 text-sm font-semibold text-purple-700 shadow-sm transition hover:bg-purple-50 dark:border-purple-800 dark:bg-gray-900 dark:text-purple-200 dark:hover:bg-purple-900/30"
+                className="rounded-full border border-purple-200 bg-white px-3 py-2 text-sm font-semibold text-purple-700 shadow-sm transition hover:bg-purple-50 dark:border-purple-800 dark:bg-gray-900 dark:text-purple-200 dark:hover:bg-purple-900/30 sm:px-4"
               >
                 Open Finance
               </button>
               <button
                 onClick={() => setShowDayNoteModal(true)}
-                className="rounded-full border border-gray-200 bg-white px-4 py-2 text-sm font-semibold text-gray-700 shadow-sm transition hover:bg-gray-50 dark:border-gray-700 dark:bg-gray-900 dark:text-gray-200 dark:hover:bg-gray-800"
+                className="rounded-full border border-gray-200 bg-white px-3 py-2 text-sm font-semibold text-gray-700 shadow-sm transition hover:bg-gray-50 dark:border-gray-700 dark:bg-gray-900 dark:text-gray-200 dark:hover:bg-gray-800 sm:px-4"
               >
                 Day journal
               </button>
@@ -251,14 +251,14 @@ export function HomeScreen({ onNavigate }: HomeScreenProps) {
               overallProgress={orbitMetrics.overallProgress}
             />
 
-            <div className="grid gap-4 md:grid-cols-3">
+            <div className="grid gap-3 md:grid-cols-3">
               <MiniStatCard title="Habits Today" value={`${orbitMetrics.completionRate}%`} detail={`${orbitMetrics.completedHabits}/${orbitMetrics.totalHabits} complete`} accent="from-purple-500 to-fuchsia-500" />
               <MiniStatCard title="Tasks" value={`${taskStats?.completionRate ?? 0}%`} detail={`${taskStats?.dueToday ?? 0} due today`} accent="from-blue-500 to-cyan-500" />
               <MiniStatCard title="Finance" value={`${orbitMetrics.financeHealth}%`} detail={`${Math.round(financeOverview?.monthlySpending ?? 0)} monthly spend`} accent="from-amber-500 to-orange-500" />
             </div>
 
             {stats && (
-              <div className="rounded-3xl bg-white/80 p-5 shadow-lg ring-1 ring-gray-200/80 backdrop-blur dark:bg-gray-900/80 dark:ring-gray-800">
+              <div className="rounded-3xl bg-white/80 p-4 shadow-lg ring-1 ring-gray-200/80 backdrop-blur dark:bg-gray-900/80 dark:ring-gray-800 sm:p-5">
                 <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
                   <div>
                     <div className="text-sm font-semibold uppercase tracking-wide text-gray-500 dark:text-gray-400">Habit overview</div>
@@ -272,18 +272,18 @@ export function HomeScreen({ onNavigate }: HomeScreenProps) {
                   </button>
                 </div>
 
-                <div className="mt-4 grid grid-cols-3 gap-4">
-                  <div className="rounded-2xl bg-gray-50 p-4 text-center dark:bg-gray-800">
+                <div className="mt-4 grid grid-cols-3 gap-2 sm:gap-4">
+                  <div className="rounded-2xl bg-gray-50 p-3 text-center dark:bg-gray-800 sm:p-4">
                     <p className="mb-1 text-sm text-gray-600 dark:text-gray-400">Today</p>
-                    <p className="text-3xl font-bold text-purple-600 dark:text-purple-400">{stats.todayCompletion?.rate || 0}%</p>
+                    <p className="text-2xl font-bold text-purple-600 dark:text-purple-400 sm:text-3xl">{stats.todayCompletion?.rate || 0}%</p>
                   </div>
-                  <div className="rounded-2xl bg-gray-50 p-4 text-center dark:bg-gray-800">
+                  <div className="rounded-2xl bg-gray-50 p-3 text-center dark:bg-gray-800 sm:p-4">
                     <p className="mb-1 text-sm text-gray-600 dark:text-gray-400">Active</p>
-                    <p className="text-3xl font-bold text-blue-600 dark:text-blue-400">{stats.activeHabits || 0}</p>
+                    <p className="text-2xl font-bold text-blue-600 dark:text-blue-400 sm:text-3xl">{stats.activeHabits || 0}</p>
                   </div>
-                  <div className="rounded-2xl bg-gray-50 p-4 text-center dark:bg-gray-800">
+                  <div className="rounded-2xl bg-gray-50 p-3 text-center dark:bg-gray-800 sm:p-4">
                     <p className="mb-1 text-sm text-gray-600 dark:text-gray-400">Avg Streak</p>
-                    <p className="text-3xl font-bold text-amber-600 dark:text-amber-400">{stats.avgStreak || 0} 🔥</p>
+                    <p className="text-2xl font-bold text-amber-600 dark:text-amber-400 sm:text-3xl">{stats.avgStreak || 0} 🔥</p>
                   </div>
                 </div>
               </div>
@@ -291,9 +291,9 @@ export function HomeScreen({ onNavigate }: HomeScreenProps) {
 
             <div className="space-y-3">
               {habits.length === 0 ? (
-                <div className="rounded-3xl bg-white/80 p-12 text-center shadow-lg ring-1 ring-gray-200/80 dark:bg-gray-900/80 dark:ring-gray-800">
+                <div className="rounded-3xl bg-white/80 p-8 text-center shadow-lg ring-1 ring-gray-200/80 dark:bg-gray-900/80 dark:ring-gray-800 sm:p-12">
                   <div className="mx-auto mb-4 flex h-16 w-16 items-center justify-center rounded-2xl bg-purple-100 text-3xl dark:bg-purple-900/30">📝</div>
-                  <h3 className="text-xl font-semibold text-gray-800 dark:text-white mb-2">No habits yet</h3>
+                  <h3 className="mb-2 text-lg font-semibold text-gray-800 dark:text-white sm:text-xl">No habits yet</h3>
                   <p className="text-gray-500 dark:text-gray-400">Create your first habit to start building momentum.</p>
                 </div>
               ) : (
@@ -313,10 +313,10 @@ export function HomeScreen({ onNavigate }: HomeScreenProps) {
             </div>
           </div>
 
-          <div className="space-y-4 xl:sticky xl:top-6 self-start">
-            <div className="rounded-3xl bg-white/80 p-5 shadow-lg ring-1 ring-gray-200/80 backdrop-blur dark:bg-gray-900/80 dark:ring-gray-800">
+          <div className="space-y-4 self-start xl:sticky xl:top-6">
+            <div className="rounded-3xl bg-white/80 p-4 shadow-lg ring-1 ring-gray-200/80 backdrop-blur dark:bg-gray-900/80 dark:ring-gray-800 sm:p-5">
               <p className="text-sm font-semibold uppercase tracking-[0.2em] text-gray-500 dark:text-gray-400">Quick actions</p>
-              <div className="mt-4 grid grid-cols-2 gap-3">
+              <div className="mt-4 grid grid-cols-2 gap-2 sm:gap-3">
                 <ActionChip label="Open To-Do" onClick={() => onNavigate?.('todo')} />
                 <ActionChip label="Open Finance" onClick={() => onNavigate?.('finance')} />
                 <ActionChip label="Day journal" onClick={() => setShowDayNoteModal(true)} />

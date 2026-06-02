@@ -226,7 +226,7 @@ export function FinanceModal({ mode, initialData, categories, paymentMethods, on
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
       exit={{ opacity: 0 }}
-      className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-4 backdrop-blur-sm"
+      className="fixed inset-0 z-50 flex items-end justify-center bg-black/50 p-3 backdrop-blur-sm sm:items-center sm:p-4"
       onClick={onClose}
     >
       <motion.div
@@ -234,11 +234,11 @@ export function FinanceModal({ mode, initialData, categories, paymentMethods, on
         animate={{ scale: 1, y: 0 }}
         exit={{ scale: 0.96, y: 12 }}
         onClick={(event) => event.stopPropagation()}
-        className="max-h-[90vh] w-full max-w-3xl overflow-y-auto rounded-3xl bg-white shadow-2xl ring-1 ring-gray-200 dark:bg-gray-900 dark:ring-gray-700"
+        className="max-h-[88vh] w-full max-w-3xl overflow-y-auto rounded-t-[1.75rem] bg-white shadow-2xl ring-1 ring-gray-200 dark:bg-gray-900 dark:ring-gray-700 sm:max-h-[90vh] sm:rounded-3xl"
       >
-        <div className="flex items-center justify-between border-b border-gray-200 px-6 py-5 dark:border-gray-800">
+        <div className="flex items-center justify-between border-b border-gray-200 px-4 py-4 dark:border-gray-800 sm:px-6 sm:py-5">
           <div>
-            <h2 className="text-2xl font-black text-gray-800 dark:text-white">
+            <h2 className="text-xl font-black text-gray-800 dark:text-white sm:text-2xl">
               {mode === 'transaction' && `${initialData ? 'Edit' : 'Add'} Transaction`}
               {mode === 'budget' && `${initialData ? 'Edit' : 'Add'} Budget`}
               {mode === 'goal' && `${initialData ? 'Edit' : 'Add'} Savings Goal`}
@@ -258,7 +258,7 @@ export function FinanceModal({ mode, initialData, categories, paymentMethods, on
           </button>
         </div>
 
-        <form onSubmit={submit} className="space-y-6 px-6 py-6">
+        <form onSubmit={submit} className="space-y-5 px-4 py-5 sm:space-y-6 sm:px-6 sm:py-6">
           {mode === 'transaction' && (
             <>
               <div className="grid gap-4 md:grid-cols-2">

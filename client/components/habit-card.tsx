@@ -49,18 +49,18 @@ export function HabitCard({ habit, onToggle, onClick, onNote, onEdit, completed 
     <motion.div
       whileHover={{ scale: 1.02 }}
       whileTap={{ scale: 0.98 }}
-      className="bg-white dark:bg-gray-800 rounded-xl p-4 shadow-sm hover:shadow-md transition-shadow"
+      className="rounded-2xl bg-white p-3 shadow-sm transition-shadow hover:shadow-md dark:bg-gray-800 sm:p-4"
       style={{ borderLeft: `4px solid ${habit.color}` }}
     >
-      <div className="flex items-start justify-between mb-3 gap-3">
+      <div className="mb-3 flex items-start justify-between gap-3">
         <div 
           className="flex items-center gap-3 flex-1 cursor-pointer"
           onClick={() => onClick?.(habit._id)}
         >
-          <span className="text-3xl">{habit.emoji}</span>
+          <span className="text-2xl sm:text-3xl">{habit.emoji}</span>
           <div>
-            <h3 className="font-semibold text-gray-800 dark:text-white">{habit.name}</h3>
-            <p className="text-xs text-gray-500 dark:text-gray-400 capitalize">{habit.frequency}</p>
+            <h3 className="text-sm font-semibold text-gray-800 dark:text-white sm:text-base">{habit.name}</h3>
+            <p className="text-[11px] capitalize text-gray-500 dark:text-gray-400 sm:text-xs">{habit.frequency}</p>
           </div>
         </div>
         <div className="flex items-center gap-2">
@@ -70,7 +70,7 @@ export function HabitCard({ habit, onToggle, onClick, onNote, onEdit, completed 
                 e.stopPropagation()
                 onEdit(habit)
               }}
-              className="w-9 h-9 md:w-11 md:h-11 rounded-full border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-700 shadow-sm flex items-center justify-center text-base md:text-lg hover:shadow-md"
+              className="flex h-8 w-8 items-center justify-center rounded-full border border-gray-200 bg-white text-sm shadow-sm hover:shadow-md dark:border-gray-700 dark:bg-gray-700 sm:h-9 sm:w-9 sm:text-base md:h-11 md:w-11 md:text-lg"
               aria-label="Edit habit"
             >
               ✏️
@@ -82,7 +82,7 @@ export function HabitCard({ habit, onToggle, onClick, onNote, onEdit, completed 
                 e.stopPropagation()
                 onNote(habit._id)
               }}
-              className="w-9 h-9 md:w-11 md:h-11 rounded-full border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-700 shadow-sm flex items-center justify-center text-base md:text-lg hover:shadow-md"
+              className="flex h-8 w-8 items-center justify-center rounded-full border border-gray-200 bg-white text-sm shadow-sm hover:shadow-md dark:border-gray-700 dark:bg-gray-700 sm:h-9 sm:w-9 sm:text-base md:h-11 md:w-11 md:text-lg"
               aria-label="Add note"
             >
               📝
@@ -90,7 +90,7 @@ export function HabitCard({ habit, onToggle, onClick, onNote, onEdit, completed 
           )}
           <button
             onClick={handleToggle}
-            className={`w-9 h-9 md:w-11 md:h-11 rounded-full border-2 flex items-center justify-center transition-all shrink-0 text-base md:text-lg ${
+            className={`flex h-8 w-8 shrink-0 items-center justify-center rounded-full border-2 text-sm transition-all sm:h-9 sm:w-9 sm:text-base md:h-11 md:w-11 md:text-lg ${
               isCompleted
                 ? 'bg-emerald-500 border-emerald-500 text-white'
                 : 'border-gray-300 dark:border-gray-600 hover:border-emerald-400'
@@ -103,11 +103,11 @@ export function HabitCard({ habit, onToggle, onClick, onNote, onEdit, completed 
       </div>
 
       {miniHeatmap && (
-        <div className="flex gap-1 mb-2">
+        <div className="mb-2 flex gap-1">
           {miniHeatmap.slice(-14).map((completed, i) => (
             <div
               key={i}
-              className="flex-1 h-6 rounded"
+              className="h-5 flex-1 rounded sm:h-6"
               style={{
                 backgroundColor: completed ? habit.color : undefined
               }}
@@ -117,7 +117,7 @@ export function HabitCard({ habit, onToggle, onClick, onNote, onEdit, completed 
       )}
 
       {habit.currentStreak > 0 && (
-        <div className="flex items-center gap-2 text-sm">
+        <div className="flex items-center gap-2 text-xs sm:text-sm">
           <span className="text-amber-500">🔥</span>
           <span className="font-semibold text-gray-700 dark:text-gray-300">
             {habit.currentStreak} day streak

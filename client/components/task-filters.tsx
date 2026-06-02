@@ -48,14 +48,14 @@ export function TaskFilters({
       className="space-y-3"
     >
       {/* Filter Buttons */}
-      <div className="flex flex-wrap gap-2">
+      <div className="flex gap-2 overflow-x-auto pb-1 [scrollbar-width:none] [-ms-overflow-style:none] [&::-webkit-scrollbar]:hidden">
         {filterOptions.map((filter) => (
           <motion.button
             key={filter.id}
             onClick={() => onFilterChange(filter.id)}
             whileHover={{ scale: 1.05 }}
             whileTap={{ scale: 0.95 }}
-            className={`px-3 py-1.5 rounded-full text-sm font-medium transition-all ${
+            className={`whitespace-nowrap rounded-full px-3 py-1.5 text-xs font-medium transition-all sm:text-sm ${
               activeFilter === filter.id
                 ? 'bg-purple-600 text-white shadow-md'
                 : 'bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-gray-600'
@@ -67,11 +67,11 @@ export function TaskFilters({
       </div>
 
       {/* Sort and Category Controls */}
-      <div className="flex gap-3 flex-wrap">
+      <div className="flex flex-col gap-3 sm:flex-row sm:flex-wrap">
         <select
           value={activeSort}
           onChange={(e) => onSortChange(e.target.value as TaskSortType)}
-          className="px-3 py-1.5 rounded-lg border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 text-gray-800 dark:text-white text-sm font-medium"
+          className="rounded-lg border border-gray-200 bg-white px-3 py-2 text-sm font-medium text-gray-800 dark:border-gray-700 dark:bg-gray-800 dark:text-white"
         >
           <option disabled>Sort by...</option>
           {sortOptions.map((sort) => (
@@ -85,7 +85,7 @@ export function TaskFilters({
           <select
             value={selectedCategory}
             onChange={(e) => onCategoryChange(e.target.value)}
-            className="px-3 py-1.5 rounded-lg border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 text-gray-800 dark:text-white text-sm font-medium"
+            className="rounded-lg border border-gray-200 bg-white px-3 py-2 text-sm font-medium text-gray-800 dark:border-gray-700 dark:bg-gray-800 dark:text-white"
           >
             <option value="">All Categories</option>
             {categories.map((category) => (

@@ -86,7 +86,7 @@ body {
 
 @layer components {
   .page-shell {
-    @apply w-full px-4 sm:px-6 lg:px-8 xl:px-10 2xl:px-12;
+    @apply w-full px-3 sm:px-5 lg:px-8 xl:px-10 2xl:px-12;
   }
 
   .dashboard-grid {
@@ -114,11 +114,11 @@ body {
   }
 
   .btn-primary {
-    @apply px-4 py-2 rounded-lg bg-linear-to-r from-purple-300 to-pink-300 text-white font-semibold hover:shadow-lg transition;
+    @apply px-3 py-2 rounded-lg bg-linear-to-r from-purple-300 to-pink-300 text-white font-semibold hover:shadow-lg transition text-sm sm:text-base;
   }
 
   .btn-secondary {
-    @apply px-4 py-2 rounded-lg border-2 border-purple-300 text-purple-300 font-semibold hover:bg-purple-300 hover:text-white transition;
+    @apply px-3 py-2 rounded-lg border-2 border-purple-300 text-purple-300 font-semibold hover:bg-purple-300 hover:text-white transition text-sm sm:text-base;
   }
 
   .card {
@@ -130,7 +130,7 @@ body {
   }
 
   .input {
-    @apply w-full px-3 py-2 rounded-lg border border-gray-300 dark:border-zinc-600 bg-white dark:bg-zinc-800 text-gray-900 dark:text-white placeholder-gray-400 dark:placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-purple-300 dark:focus:ring-purple-500 transition;
+    @apply w-full px-3 py-2.5 rounded-lg border border-gray-300 dark:border-zinc-600 bg-white dark:bg-zinc-800 text-gray-900 dark:text-white placeholder-gray-400 dark:placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-purple-300 dark:focus:ring-purple-500 transition text-sm sm:text-base;
   }
 
   .habit-grid {
@@ -187,6 +187,14 @@ body {
 
   .fade-in {
     animation: fadeIn 0.3s ease-in-out;
+  }
+
+  .mobile-card {
+    @apply rounded-2xl sm:rounded-3xl;
+  }
+
+  .mobile-section-title {
+    @apply text-2xl font-bold tracking-tight sm:text-3xl lg:text-4xl;
   }
 
   .slide-up {

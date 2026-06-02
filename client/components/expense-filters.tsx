@@ -55,18 +55,18 @@ export function ExpenseFilters({
       animate={{ opacity: 1, y: 0 }}
       className="space-y-3"
     >
-      <div className="flex gap-3 flex-col lg:flex-row">
+      <div className="flex flex-col gap-3 lg:flex-row">
         <input
           value={search}
           onChange={(event) => onSearchChange(event.target.value)}
           placeholder="Search amount, category, merchant, notes, tags..."
-          className="flex-1 rounded-xl border border-gray-200 bg-white px-4 py-3 text-sm text-gray-800 shadow-sm outline-none transition focus:border-purple-400 focus:ring-2 focus:ring-purple-200 dark:border-gray-700 dark:bg-gray-800 dark:text-white dark:focus:ring-purple-900/40"
+          className="flex-1 rounded-xl border border-gray-200 bg-white px-3 py-2.5 text-sm text-gray-800 shadow-sm outline-none transition focus:border-purple-400 focus:ring-2 focus:ring-purple-200 dark:border-gray-700 dark:bg-gray-800 dark:text-white dark:focus:ring-purple-900/40 sm:px-4 sm:py-3"
         />
-        <div className="grid grid-cols-2 gap-3 lg:w-[360px]">
+        <div className="grid grid-cols-2 gap-2 lg:w-90 lg:gap-3">
           <select
             value={sortBy}
             onChange={(event) => onSortChange(event.target.value as ExpenseSortType)}
-            className="rounded-xl border border-gray-200 bg-white px-4 py-3 text-sm text-gray-800 shadow-sm dark:border-gray-700 dark:bg-gray-800 dark:text-white"
+            className="rounded-xl border border-gray-200 bg-white px-3 py-2.5 text-sm text-gray-800 shadow-sm dark:border-gray-700 dark:bg-gray-800 dark:text-white sm:px-4 sm:py-3"
           >
             {sortOptions.map((option) => (
               <option key={option.id} value={option.id}>
@@ -77,7 +77,7 @@ export function ExpenseFilters({
           <select
             value={paymentMethod}
             onChange={(event) => onPaymentMethodChange(event.target.value)}
-            className="rounded-xl border border-gray-200 bg-white px-4 py-3 text-sm text-gray-800 shadow-sm dark:border-gray-700 dark:bg-gray-800 dark:text-white"
+            className="rounded-xl border border-gray-200 bg-white px-3 py-2.5 text-sm text-gray-800 shadow-sm dark:border-gray-700 dark:bg-gray-800 dark:text-white sm:px-4 sm:py-3"
           >
             <option value="">All Payment Methods</option>
             {paymentMethods.map((method) => (
@@ -89,13 +89,13 @@ export function ExpenseFilters({
         </div>
       </div>
 
-      <div className="flex flex-wrap gap-2">
+      <div className="flex gap-2 overflow-x-auto pb-1 [scrollbar-width:none] [-ms-overflow-style:none] [&::-webkit-scrollbar]:hidden">
         {typeOptions.map((option) => (
           <motion.button
             key={option.id}
             whileTap={{ scale: 0.96 }}
             onClick={() => onTypeFilterChange(option.id)}
-            className={`rounded-full px-4 py-2 text-sm font-medium transition-all ${
+            className={`whitespace-nowrap rounded-full px-3 py-2 text-xs font-medium transition-all sm:px-4 sm:text-sm ${
               typeFilter === option.id
                 ? 'bg-purple-600 text-white shadow-md'
                 : 'bg-white text-gray-700 shadow-sm ring-1 ring-gray-200 hover:bg-gray-50 dark:bg-gray-800 dark:text-gray-300 dark:ring-gray-700 dark:hover:bg-gray-700'
@@ -107,11 +107,11 @@ export function ExpenseFilters({
         ))}
       </div>
 
-      <div className="flex flex-wrap gap-3">
+      <div className="flex gap-3 overflow-x-auto pb-1 [scrollbar-width:none] [-ms-overflow-style:none] [&::-webkit-scrollbar]:hidden">
         <select
           value={category}
           onChange={(event) => onCategoryChange(event.target.value)}
-          className="rounded-xl border border-gray-200 bg-white px-4 py-3 text-sm text-gray-800 shadow-sm dark:border-gray-700 dark:bg-gray-800 dark:text-white"
+          className="rounded-xl border border-gray-200 bg-white px-3 py-2.5 text-sm text-gray-800 shadow-sm dark:border-gray-700 dark:bg-gray-800 dark:text-white sm:px-4 sm:py-3"
         >
           <option value="">All Categories</option>
           {categories.map((item) => (

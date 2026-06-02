@@ -26,10 +26,10 @@ export function OrbitScoreCard({
       animate={{ opacity: 1, y: 0 }}
       className="overflow-hidden rounded-3xl bg-linear-to-br from-purple-600 via-fuchsia-600 to-pink-600 p-px shadow-xl"
     >
-      <div className="rounded-[calc(1.5rem-1px)] bg-white/90 p-6 dark:bg-gray-900/90">
-        <div className="flex items-start justify-between gap-4">
-          <div className="flex items-center gap-4">
-            <div className="relative h-16 w-16 shrink-0 overflow-hidden rounded-2xl bg-white shadow-lg ring-1 ring-white/60 dark:bg-gray-800">
+      <div className="rounded-[calc(1.5rem-1px)] bg-white/90 p-4 dark:bg-gray-900/90 sm:p-6">
+        <div className="flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between">
+          <div className="flex items-center gap-3 sm:gap-4">
+            <div className="relative h-12 w-12 shrink-0 overflow-hidden rounded-2xl bg-white shadow-lg ring-1 ring-white/60 dark:bg-gray-800 sm:h-16 sm:w-16">
               <Image
                 src="/logo.png"
                 alt="Orbit logo"
@@ -39,13 +39,13 @@ export function OrbitScoreCard({
               />
             </div>
             <div>
-              <p className="text-sm font-semibold uppercase tracking-[0.24em] text-purple-600 dark:text-purple-300">
+              <p className="text-xs font-semibold uppercase tracking-[0.22em] text-purple-600 dark:text-purple-300 sm:text-sm sm:tracking-[0.24em]">
                 {subtitle}
               </p>
-              <h3 className="text-2xl font-black text-gray-800 dark:text-white">
+              <h3 className="text-xl font-black text-gray-800 dark:text-white sm:text-2xl">
                 Productivity Score
               </h3>
-              <p className="mt-1 text-sm text-gray-500 dark:text-gray-400">
+              <p className="mt-1 text-xs text-gray-500 dark:text-gray-400 sm:text-sm">
                 Weekly momentum across habits, tasks, and finance
               </p>
             </div>
@@ -53,7 +53,7 @@ export function OrbitScoreCard({
           <OrbitRing score={score} />
         </div>
 
-        <div className="mt-6 grid grid-cols-2 gap-3 md:grid-cols-4">
+        <div className="mt-5 grid grid-cols-2 gap-2 md:grid-cols-4 sm:mt-6 sm:gap-3">
           <Metric label="Productivity" value={`${productivityScore}%`} />
           <Metric label="Weekly Momentum" value={`${weeklyMomentum}%`} />
           <Metric label="Completion" value={`${completionPercentage}%`} />
@@ -71,7 +71,7 @@ function OrbitRing({ score }: { score: number }) {
   const offset = circumference - (score / 100) * circumference;
 
   return (
-    <div className="relative flex h-30 w-30 items-center justify-center">
+    <div className="relative flex h-24 w-24 items-center justify-center sm:h-30 sm:w-30">
       <svg width={size} height={size} className="-rotate-90">
         <circle
           cx={60}
@@ -109,10 +109,10 @@ function OrbitRing({ score }: { score: number }) {
         </defs>
       </svg>
       <div className="absolute text-center">
-        <div className="text-2xl font-black text-gray-800 dark:text-white">
+        <div className="text-lg font-black text-gray-800 dark:text-white sm:text-2xl">
           {score}%
         </div>
-        <div className="text-[10px] uppercase tracking-[0.2em] text-gray-500 dark:text-gray-400">
+        <div className="text-[9px] uppercase tracking-[0.16em] text-gray-500 dark:text-gray-400 sm:text-[10px] sm:tracking-[0.2em]">
           Orbit
         </div>
       </div>
@@ -122,11 +122,11 @@ function OrbitRing({ score }: { score: number }) {
 
 function Metric({ label, value }: { label: string; value: string }) {
   return (
-    <div className="rounded-2xl bg-gray-50 p-3 ring-1 ring-gray-200 dark:bg-gray-800 dark:ring-gray-700">
-      <p className="text-[11px] uppercase tracking-[0.18em] text-gray-500 dark:text-gray-400">
+    <div className="rounded-2xl bg-gray-50 p-2.5 ring-1 ring-gray-200 dark:bg-gray-800 dark:ring-gray-700 sm:p-3">
+      <p className="text-[10px] uppercase tracking-[0.16em] text-gray-500 dark:text-gray-400 sm:text-[11px] sm:tracking-[0.18em]">
         {label}
       </p>
-      <p className="mt-1 text-lg font-black text-gray-800 dark:text-white">
+      <p className="mt-1 text-base font-black text-gray-800 dark:text-white sm:text-lg">
         {value}
       </p>
     </div>

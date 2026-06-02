@@ -91,15 +91,15 @@ export function AddHabitFlow({ isOpen, onClose, onSuccess }: AddHabitFlowProps) 
 
   return (
     <AnimatePresence>
-      <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
+      <div className="fixed inset-0 z-50 flex items-end justify-center bg-black/50 p-3 sm:items-center sm:p-4">
         <motion.div
           initial={{ opacity: 0, scale: 0.9 }}
           animate={{ opacity: 1, scale: 1 }}
           exit={{ opacity: 0, scale: 0.9 }}
-          className="bg-white dark:bg-gray-800 rounded-2xl max-w-md w-full p-6"
+          className="max-h-[88vh] w-full max-w-md overflow-y-auto rounded-t-[1.75rem] bg-white p-4 dark:bg-gray-800 sm:max-h-[90vh] sm:rounded-2xl sm:p-6"
         >
-          <div className="flex justify-between items-center mb-6">
-            <h2 className="text-2xl font-bold text-gray-800 dark:text-white">
+          <div className="mb-5 flex items-center justify-between sm:mb-6">
+            <h2 className="text-xl font-bold text-gray-800 dark:text-white sm:text-2xl">
               Create New Habit
             </h2>
             <button
@@ -110,7 +110,7 @@ export function AddHabitFlow({ isOpen, onClose, onSuccess }: AddHabitFlowProps) 
             </button>
           </div>
 
-          <div className="mb-6">
+          <div className="mb-5 sm:mb-6">
             <div className="flex gap-2">
               {[1, 2, 3].map((s) => (
                 <div
@@ -134,13 +134,13 @@ export function AddHabitFlow({ isOpen, onClose, onSuccess }: AddHabitFlowProps) 
                   value={name}
                   onChange={(e) => setName(e.target.value)}
                   placeholder="e.g., Morning Meditation"
-                  className="w-full px-4 py-3 rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-purple-500"
+                  className="w-full rounded-lg border border-gray-300 bg-white px-3 py-2.5 text-sm text-gray-900 focus:outline-none focus:ring-2 focus:ring-purple-500 dark:border-gray-600 dark:bg-gray-700 dark:text-white sm:px-4 sm:py-3 sm:text-base"
                 />
               </div>
               <button
                 onClick={() => setStep(2)}
                 disabled={!name.trim()}
-                className="w-full py-3 bg-purple-500 text-white rounded-lg font-semibold hover:bg-purple-600 disabled:opacity-50 disabled:cursor-not-allowed"
+                  className="w-full rounded-lg bg-purple-500 py-3 font-semibold text-white hover:bg-purple-600 disabled:cursor-not-allowed disabled:opacity-50"
               >
                 Next
               </button>
@@ -150,7 +150,7 @@ export function AddHabitFlow({ isOpen, onClose, onSuccess }: AddHabitFlowProps) 
           {step === 2 && (
             <div className="space-y-4">
               <div>
-                <label className="block text-sm font-medium mb-3 text-gray-700 dark:text-gray-300">
+                <label className="mb-3 block text-sm font-medium text-gray-700 dark:text-gray-300">
                   Choose Icon
                 </label>
                 <div className="grid grid-cols-5 gap-2">
@@ -158,7 +158,7 @@ export function AddHabitFlow({ isOpen, onClose, onSuccess }: AddHabitFlowProps) 
                     <button
                       key={e}
                       onClick={() => setEmoji(e)}
-                      className={`text-3xl p-3 rounded-lg border-2 transition-all ${
+                      className={`rounded-lg border-2 p-2.5 text-2xl transition-all sm:p-3 sm:text-3xl ${
                         emoji === e
                           ? 'border-purple-500 bg-purple-50 dark:bg-purple-900/30'
                           : 'border-gray-200 dark:border-gray-700'
@@ -172,13 +172,13 @@ export function AddHabitFlow({ isOpen, onClose, onSuccess }: AddHabitFlowProps) 
               <div className="flex gap-2">
                 <button
                   onClick={() => setStep(1)}
-                  className="flex-1 py-3 bg-gray-200 dark:bg-gray-700 text-gray-700 dark:text-gray-300 rounded-lg font-semibold"
+                  className="flex-1 rounded-lg bg-gray-200 py-3 font-semibold text-gray-700 dark:bg-gray-700 dark:text-gray-300"
                 >
                   Back
                 </button>
                 <button
                   onClick={() => setStep(3)}
-                  className="flex-1 py-3 bg-purple-500 text-white rounded-lg font-semibold hover:bg-purple-600"
+                  className="flex-1 rounded-lg bg-purple-500 py-3 font-semibold text-white hover:bg-purple-600"
                 >
                   Next
                 </button>
@@ -189,26 +189,26 @@ export function AddHabitFlow({ isOpen, onClose, onSuccess }: AddHabitFlowProps) 
           {step === 3 && (
             <div className="space-y-4">
               <div>
-                <label className="block text-sm font-medium mb-3 text-gray-700 dark:text-gray-300">
+                <label className="mb-3 block text-sm font-medium text-gray-700 dark:text-gray-300">
                   Frequency
                 </label>
-                <div className="flex gap-2 mb-4">
+                <div className="mb-4 flex gap-2">
                   <button
                     onClick={() => setFrequency('daily')}
-                    className={`flex-1 py-2 rounded-lg font-medium ${
+                    className={`flex-1 rounded-lg py-2 text-sm font-medium ${
                       frequency === 'daily'
                         ? 'bg-purple-500 text-white'
-                        : 'bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-300'
+                        : 'bg-gray-100 text-gray-700 dark:bg-gray-700 dark:text-gray-300'
                     }`}
                   >
                     Daily
                   </button>
                   <button
                     onClick={() => setFrequency('custom')}
-                    className={`flex-1 py-2 rounded-lg font-medium ${
+                    className={`flex-1 rounded-lg py-2 text-sm font-medium ${
                       frequency === 'custom'
                         ? 'bg-purple-500 text-white'
-                        : 'bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-300'
+                        : 'bg-gray-100 text-gray-700 dark:bg-gray-700 dark:text-gray-300'
                     }`}
                   >
                     Custom
@@ -220,10 +220,10 @@ export function AddHabitFlow({ isOpen, onClose, onSuccess }: AddHabitFlowProps) 
                       <button
                         key={i}
                         onClick={() => toggleDay(i)}
-                        className={`py-2 rounded-lg text-sm font-medium ${
+                        className={`rounded-lg py-2 text-xs font-medium sm:text-sm ${
                           customDays.includes(i)
                             ? 'bg-purple-500 text-white'
-                            : 'bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-300'
+                            : 'bg-gray-100 text-gray-700 dark:bg-gray-700 dark:text-gray-300'
                         }`}
                       >
                         {day}
@@ -235,14 +235,14 @@ export function AddHabitFlow({ isOpen, onClose, onSuccess }: AddHabitFlowProps) 
               <div className="flex gap-2">
                 <button
                   onClick={() => setStep(2)}
-                  className="flex-1 py-3 bg-gray-200 dark:bg-gray-700 text-gray-700 dark:text-gray-300 rounded-lg font-semibold"
+                  className="flex-1 rounded-lg bg-gray-200 py-3 font-semibold text-gray-700 dark:bg-gray-700 dark:text-gray-300"
                 >
                   Back
                 </button>
                 <button
                   onClick={handleSubmit}
                   disabled={loading || (frequency === 'custom' && customDays.length === 0)}
-                  className="flex-1 py-3 bg-purple-500 text-white rounded-lg font-semibold hover:bg-purple-600 disabled:opacity-50 disabled:cursor-not-allowed"
+                  className="flex-1 rounded-lg bg-purple-500 py-3 font-semibold text-white hover:bg-purple-600 disabled:cursor-not-allowed disabled:opacity-50"
                 >
                   {loading ? 'Creating...' : 'Create Habit'}
                 </button>
